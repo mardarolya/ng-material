@@ -111,6 +111,8 @@ body {
 }
 .conteiner .to-left {
   float: left;
+  max-width: 90%;
+  overflow: hidden;
 }
 .conteiner .to-right {
   float: right;
