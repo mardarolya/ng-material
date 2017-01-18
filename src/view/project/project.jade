@@ -1,1 +1,15 @@
-p Hello!
+form
+	div.head-panel
+		md-button.close.icons8-delete-2(ng-click="c.closePanel()")
+			span ESC
+		h2 {{c.panelHeader}} 
+
+	div.new-task
+		div(layout-gt-sm="row")
+			md-input-container.md-block(flex-gt-sm="")
+				label ProjectName
+				input(ng-model="c.nameProject")
+
+	md-button.md-fab.check-task(aria-label="Check task" ng-click="c.okPanel()")
+		i.icons8-checkmark
+
