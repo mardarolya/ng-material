@@ -1,0 +1,415 @@
+@font-face {
+  font-weight: normal;
+  font-style: normal;
+
+  font-family: "SFUIText";
+  src: url("../font/text/SFUIText.ttf") format("opentype");
+}
+
+@font-face {
+  font-weight: normal;
+  font-style: normal;
+
+  font-family: "SFUITextRegular";
+  src: url("../font/text/SFUIText-Regular.otf") format("opentype");
+}
+
+body {
+	font-family: "SFUIText", "Arial", sans-serif;
+}
+
+.conteiner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	overflow: hidden;
+
+	.dark-background {
+		background-color: #292c33;
+		color:  white;
+		width: 25%;
+		max-width: 340px;
+	}
+
+	.conteiner-sidebar {
+		position: relative;
+		margin: 20px 0 22px 0;
+		padding: 0 30px;
+
+		md-list-item.user {
+			margin-bottom: 38px;
+			padding-left: 10px;
+		}
+	}
+
+	.with-frame {
+	    padding: 4px;
+	    border-radius: 50%;
+		border: 1px solid white;
+		margin-right: 20px;
+		height: 50px;
+		width: 50px;
+
+		.md-avatar {
+			margin: 0;
+			height: 50px;
+			width: 50px;
+		}
+	}
+
+	.name-user {
+		font-size: 15px;
+		line-height: 14px;
+	}
+
+	.full-width {
+		position: relative;
+		width: 100%;
+		padding-right: 15px;
+		padding-left: 15px;
+		text-transform: none;
+	}
+
+	.projects {
+		font-size: 12px;
+		line-height: 14px;
+		color: #b3bbcb;
+		margin-bottom: 18px;
+	}
+
+	.add-project {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		right: 35px;
+		font-size: 22px;
+		line-height: 28px;
+		color: white;
+		min-width: 30px;
+		min-height: 30px;
+		margin: 0;
+		padding: 0;
+
+	}
+
+	.item-project {
+		padding: 0;
+		margin: 0;
+	}
+
+	.conteiner-sidebar .item-project:nth-child(1) {
+		color: #6b6b99;
+	}
+
+	.complete {
+		display: table;
+		height: 80%;
+		width: 100%;
+
+		 > span {
+			display: table-cell;
+			margin: 0 auto;
+			color: #b1b1c8;
+			vertical-align: middle;
+			text-align: center;
+			font-size: 24px;
+		}
+
+		i {
+			font-size: 200px;
+		}
+	}
+
+	.list-item {
+		font-size: 15px;
+		line-height: 40px;
+		margin: 0;
+
+		&.active {
+			background-color: #6b6b99;
+		}
+	}
+
+	.to-left {
+		float: left;
+		max-width: 90%;
+		overflow: hidden;
+	}
+
+	.to-right {
+		float: right;
+	}
+
+	.log-out {
+		position: absolute;
+		bottom: 10px;	
+		left: 30px;
+	}
+
+	.no-transform {
+		text-transform: none;
+		text-align: center;
+	}
+
+	md-content {
+		position: relative;
+		background-color: #f7f7f7;
+	}
+
+	md-content .search {
+		margin-bottom: -10px;
+	}
+
+	.button-search,
+	.button-more {
+		position: absolute;
+		top: 0;
+		min-width: 60px;
+		height: 50px;
+		background: transparent;
+		font-size: 30px;
+		line-height: 30px;
+		color: #b3bbcb;
+		margin: 0;
+		padding: 0;
+	}
+
+	.button-search {
+		left: 0;
+	}
+
+	.button-more {
+		right: 0;
+	}
+
+	.display-none {
+		display: none;
+	}
+
+	.dropdown-menu {
+		position: absolute;
+		right: 0;
+		top: 50px;
+	}
+
+	.task-conteiner {
+		margin: 0 auto;
+		width: 60%;
+		max-width: 620px;
+
+		md-card {
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.16);
+			border-radius: 10px;
+			font-size: 15px;
+			line-height: 36px;
+		}
+
+		 md-card-content {
+			position: relative;
+			padding: 12px 30px;
+		}	
+
+		md-card-content:not(:nth-child(1)):after,
+		md-card-content:not(:nth-child(1)):before {
+			content: "";
+			position: absolute;
+			top: 1px;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 80%;
+			height: 1px;
+			background-color: #f2f2f2;
+		}
+
+		md-card-content:before {
+			top: 0;
+			background-color: #f7f7f7;
+		} 
+
+		md-radio-button {
+			margin: 0;
+		}
+
+		.task {
+			margin-bottom: 6px;
+
+			md-card {
+				margin-top: 6px;
+			}
+		}
+
+		.task-date {
+			color: #b3bbcb;
+			font-size: 15px;
+			line-height: 14px;
+			margin-left: 15px;
+		}
+
+		.task-name {
+			display: inline-block;
+			border-left: 2px solid #f4f4f4;
+			vertical-align: middle;
+			padding-left: 15px;
+		    min-height: 36px;
+		    max-width: 75%;
+		    cursor: pointer;
+
+		    span {
+		    	word-wrap: break-word;
+		    }
+
+		    &:focus {
+		    	outline: none;
+				box-shadow: none;
+		    }
+		}
+	}
+}
+
+md-radio-button {
+	display: inline-block;
+
+	&:focus {
+		outline: none;
+		box-shadow: none;
+	}
+
+	.md-ink-ripple .md-off, 
+    .md-ink-ripple .md-on {
+		border-width: 3px;	
+	}
+
+	.md-ink-ripple .md-off {
+		border-color: #bdbdbd;
+	}
+
+	// .md-label {
+	// 	margin-left: 55px;
+	// 	border-left: 2px solid #f4f4f4;
+	// 	padding-left: 15px;
+	// }
+
+}
+
+.md-fab.add-task,
+.md-fab.check-task {
+	position: absolute;
+	z-index: 2;
+	bottom: 30px;
+	right: 30px;
+	background-color: #6b6b99;
+	font-size: 30px;
+}
+
+.md-fab.check-task {
+	z-index: 72;
+} 
+
+.for-right-panel {
+	position: absolute;
+	width: 100%;	
+	height: 100%;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.2);
+	z-index: 70;
+}
+
+.right-panel {
+	position: absolute;
+	width: 35%;
+	height: 100%;
+	right: 0;
+	top: 0;
+    background-color: #292c33;
+    z-index: 71;
+    color: white;
+}
+
+.head-panel {
+	position: relative;
+	border: 1px solid transparent;
+	margin-top: 20px;
+	margin-bottom: 25px;
+	min-height: 35px;
+
+	.close{
+		position: absolute;
+		left: 0;
+		top: 0;
+		font-size: 25px;
+		line-height: 25px;
+		margin: 0;
+		min-width: 50px;
+		min-height: 30px;
+
+		span {
+			display: block;
+			font-size: 9px;
+			line-height: 8px;
+			margin-top: 1px;
+		}
+	}
+
+	h2 {
+		font-size: 18px;
+		line-height: 35px;
+		text-align: center;
+		margin: 0 auto;
+		width: 60%;
+		word-wrap: break-word;
+	}
+
+	.panel-actions {
+		position: absolute;
+		top: 0;
+		right: 20px;
+		color: #51555e;
+
+		.md-button {
+			font-size: 18px;
+			min-height: 30px;
+			min-width: 35px;
+			margin: 0;
+		}
+	}
+}
+
+.panel-body {
+	color: #dbdbdb;
+	font-size: 12px;
+	line-height: 22px;
+	padding: 0 75px;
+	font-family: "SFUITextRegular", "Arial", sans-serif;
+}
+
+.new-task {
+	padding: 0 75px;
+	margin-top: -10px;
+
+	md-input-container {
+		margin: 0;
+
+		label {
+			font-family: "SFUITextRegular", "Arial", sans-serif;	
+			color: #f6f6f6;
+			font-size: 15px;	
+			line-height: 20px;
+		}
+
+		&.md-input-focused:not(.md-input-invalid) label {
+			color: #f6f6f6;
+			font-family: "SFUITextRegular", "Arial", sans-serif;	
+		}
+
+		.md-input { 
+			color: #f6f6f6;
+		}
+
+		input,
+		&.md-input-focused:not(.md-input-invalid) .md-input {
+			border-color: #f6f6f6;
+		}
+	}
+}

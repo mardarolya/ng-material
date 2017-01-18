@@ -1,0 +1,57 @@
+
+md-progress-linear(md-mode="indeterminate" ng-show="!c.loaded")
+
+div.conteiner(layout="row" ng-show="c.loaded")
+	md-sidenav.dark-background(md-is-locked-open="true")
+		div.conteiner-sidebar(layout="column")
+			md-list-item.user
+				span.with-frame
+					img.md-avatar(ng-src="image/TrevorReyes.jpg" width="50" height="50")  
+
+				span.name-user {{c.currentUser}}
+
+			div.projects.full-width
+				span.to-left Projects
+				md-button.add-project(aria-label="New project" ng-click="c.openRightPanel()")
+					span.icons8-plus
+
+			div.item-project(ng-repeat="project in c.projects")
+				md-button.full-width.list-item(id="id_{{project.Project.id}}" aria-label="Project" ng-click="c.getTasks(project.Project.id)")
+					span.to-left  {{project.Project.title}}
+					span.to-right {{project.Project.task_count}}
+
+		
+		md-list-item.log-out
+			md-button
+				span.to-left.no-transform Log Out
+
+	md-content(flex) 
+		md-input-container.md-block.search(md-no-float="")
+			input(aria-label="Search task")
+		md-button.button-search(aria-label="Search")
+			i.icons8-search
+		md-button.icons8-more.button-more(aria-label="Edit project")
+
+		div.complete(layout="column" ng-show="c.tasks.length == 0")
+			span
+				i.icons8-todo-list
+				br
+				span Have a good day
+
+		div.task-conteiner(layout="column")
+			div.task(ng-repeat = "task in c.tasks" class="task")
+				span.task-date task.date
+				md-card
+					md-card-content(ng-repeat = "name in task.names")
+						md-radio-group
+							md-radio-button.md-primary(value="false" ng-click="c.taskDone(name.id)")
+						div.task-name(ng-click="c.showPanel('taskView', name.name, name.description, name.id)")
+							span name.name
+
+		md-button.md-fab.add-task(aria-label="Add task" ng-click="c.showPanel('taskCreate', 'Create new task', '')")
+			i.icons8-plus
+
+	md-sidenav.md-sidenav-right.md-whiteframe-4dp.dark-background(md-component-id="rightPanel")		
+		md-content
+			div.ui-view
+

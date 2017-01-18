@@ -1,0 +1,28 @@
+mixin begin()
+	doctype html
+	html(lang="en")
+
+mixin head()
+	head
+		meta(charset="UTF-8")
+		meta(name="viewport", content="width=device-width,initial-scale=1.0,maximum-scale=1")
+		+source-style("angular-material/angular-material.min.css")
+		+style("style-icons")
+		+style("style-todo")
+		title ToDoApp
+
+mixin source(name)
+	script(src="../bower_components/"+name, type="text/javascript")
+
+mixin source-style(name)
+	link(href="../bower_components/"+name, rel="stylesheet")		
+
+mixin script(name)
+	script(src="script/"+name, type="text/javascript")
+
+mixin script-full(name)
+	script(src=name, type="text/javascript")		
+
+mixin style(name)
+	link(href="style/"+name+".css" rel="stylesheet")
+

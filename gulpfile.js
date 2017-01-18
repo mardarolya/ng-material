@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var gulp = require("gulp"),
 	jade = require('gulp-jade'),
@@ -11,7 +11,7 @@ var gulp = require("gulp"),
 // следим за изменениями
 gulp.task('whats-new', function(){
 	
-	watch(['./project/index.jade', './project/view/**/*.jade'])  
+	watch(['./src/index.jade', './src/view/**/*.jade'])  
 		.on("change", function(file) {
             gulp.src(file)
             .pipe(jade({pretty: true}))
@@ -21,20 +21,24 @@ gulp.task('whats-new', function(){
                 }, {overwrite: true}));
         });
 
-	watch('./project/script/ts/*.ts')
+	watch(['./src/script/*.ts', './src/view/**/*.ts'])
     	.on("change", function(file) {
 	            gulp.src(file)
 	            .pipe(tscr())
 	            .on('error', console.log)
-	            .pipe(gulp.dest('./project/script/js'), {overwrite: true});
+	            .pipe(gulp.dest(function(file){
+                    return file.base;
+                }, {overwrite: true}));
 	        });
 	
-	watch('./project/style/less/*.less')
+	watch('./src/style/*.less')
 		.on("change", function(file) {
             gulp.src(file)
             .pipe(less({pretty: true}))
             .on('error', console.log)
-            .pipe(gulp.dest('./project/style/css'), {overwrite: true});
+            .pipe(gulp.dest(function(file){
+                    return file.base;
+                }, {overwrite: true}));
         });
 
 });	
