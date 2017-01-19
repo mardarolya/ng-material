@@ -12,7 +12,7 @@ var ToDoApp;
         var startPage = angular.module("ToDoApp.StartPage", ["ui.router"]);
         var StartPageApp = (function (_super) {
             __extends(StartPageApp, _super);
-            function StartPageApp($http, $mdSidenav, $state) {
+            function StartPageApp($http, $mdSidenav, $state, $scope) {
                 var _this = _super.call(this, $http) || this;
                 _this.mdSidenav = $mdSidenav;
                 _this.projects = [];
@@ -24,17 +24,30 @@ var ToDoApp;
                     _this.currentUser = data.Account.username;
                     var photo = document.querySelector(".with-frame img");
                     photo.src = data.Account.image_url;
-                    _this.getProgects(function (data) {
-                        _this.projects = data.projects;
-                        if (_this.currentProjectId == 0) {
-                            _this.currentProjectId = _this.projects[0].Project.id;
+                    _this.getProj();
+                });
+                $scope.$watch(function () { return _this.mdSidenav("rightPanel").isOpen(); }, function (newValue, oldValue) {
+                    if (oldValue == true && newValue == false) {
+                        var reloadProject = localStorage.getItem("reloadProject");
+                        if (reloadProject && reloadProject == "true") {
+                            _this.getProj();
+                            localStorage.removeItem("reloadProject");
                         }
-                        _this.loaded = true;
-                        _this.getTasks(_this.currentProjectId);
-                    });
+                    }
                 });
                 return _this;
             }
+            StartPageApp.prototype.getProj = function () {
+                var _this = this;
+                this.getProgects(function (data) {
+                    _this.projects = data.projects;
+                    if (_this.currentProjectId == 0) {
+                        _this.currentProjectId = _this.projects[0].Project.id;
+                    }
+                    _this.loaded = true;
+                    _this.getTasks(_this.currentProjectId);
+                });
+            };
             StartPageApp.prototype.getTasks = function (projectID) {
                 var _this = this;
                 this.currentProjectId = projectID;
@@ -114,9 +127,33 @@ var ToDoApp;
                     }
                 }
             };
-            StartPageApp.prototype.openRightPanel = function () {
+            StartPageApp.prototype.openForAddProject = function () {
                 this.mdSidenav("rightPanel").open();
                 this.state.go("StartPage.Project", { projectId: 0 });
+            };
+            StartPageApp.prototype.openForEditProject = function () {
+                this.mdSidenav("rightPanel").open();
+                this.state.go("StartPage.Project", { projectId: this.currentProjectId });
+            };
+            StartPageApp.prototype.delProject = function () {
+                var _this = this;
+                this.deleteProject(this.currentProjectId, function () {
+                    _this.getProj();
+                });
+            };
+            StartPageApp.prototype.openForAddTask = function () {
+                this.mdSidenav("rightPanel").open();
+                this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" });
+            };
+            StartPageApp.prototype.openForShowTask = function (idTask) {
+                this.mdSidenav("rightPanel").open();
+                this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" });
+            };
+            StartPageApp.prototype.taskDone = function (idTask) {
+                var _this = this;
+                this.doneTask({ session: "", Task: { id: idTask } }, function () {
+                    _this.getProj();
+                });
             };
             return StartPageApp;
         }(ToDoApp.Api.ApiWork));

@@ -1,16 +1,16 @@
 
-<form>
+<div class="right-panel">
   <div class="head-panel">
-    <md-button ng-click="c.closePanel()" class="close icons8-delete-2"><span>ESC</span></md-button>
+    <md-button ng-click="c.close()" class="close icons8-delete-2"><span>ESC</span></md-button>
     <h2>{{c.panelHeader}} </h2>
   </div>
   <div class="new-task">
     <div layout-gt-sm="row">
       <md-input-container flex-gt-sm="" class="md-block">
         <label>ProjectName</label>
-        <input ng-model="c.nameProject"/>
+        <input ng-model="c.nameProject" required=""/>
       </md-input-container>
     </div>
   </div>
-  <md-button aria-label="Check task" ng-click="c.okPanel()" class="md-fab check-task"><i class="icons8-checkmark"></i></md-button>
-</form>
+  <md-button aria-label="Check task" ng-click="c.saveProject()" class="md-fab check-task"><i class="icons8-checkmark"></i></md-button>
+</div>

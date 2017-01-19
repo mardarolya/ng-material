@@ -43,7 +43,7 @@ module ToDoApp.Api {
     }
 
     interface doneTask{
-        session: number,
+        session: string,
         Task: {
             id: number
         }
@@ -152,6 +152,17 @@ module ToDoApp.Api {
             	});
         }
 
+        public fetchProject(idProject: number, success: ((data) => void)) {
+        	 this.http.get(this.way + '/projects/project?session=' + this.session + "&project_id=" + idProject)
+                .then(
+                    (data: any) => {
+                    	 success(data.data);
+                    },                     
+                    (error: any) => {
+                        console.log("fetchProject: error: " + error);
+                    });  
+        }
+
         public addProject(body: addProject, success: (() => void)){
         	body.session = this.session;
         	this.http.post(this.way + "/projects/project", body)
@@ -170,7 +181,7 @@ module ToDoApp.Api {
                     success();
                 },
                 (error) => {
-                    console.log("editProject: error: " + error);
+                    console.log("editProject: error");
                 });
         }
 
@@ -221,6 +232,7 @@ module ToDoApp.Api {
         }
 
         public doneTask(body: doneTask, success: (() => void)){
+        	body.session = this.session;
         	this.http.post(this.way + "/tasks/task/complite", body)
                 .then((data: any) => {
                    success();
@@ -228,6 +240,17 @@ module ToDoApp.Api {
                 (error: any) => {
                   console.log("doneTask: error:" + error);
                 });
+        }
+
+        public fetchTask(idTask: number, success: ((data) => void)){
+ 			this.http.get(this.way + '/tasks/task?session=' + this.session + "&task_id=" + idTask)
+                .then(
+                    (data: any) => {
+                    	 success(data.data);
+                    },                     
+                    (error: any) => {
+                        console.log("fetchTask: error: " + error.toString());
+                    });  
         }
     }
 }

@@ -84,6 +84,14 @@ var ToDoApp;
                     console.log("getProjectTasks(" + idProject + ", " + offset + "): error: " + error);
                 });
             };
+            ApiWork.prototype.fetchProject = function (idProject, success) {
+                this.http.get(this.way + '/projects/project?session=' + this.session + "&project_id=" + idProject)
+                    .then(function (data) {
+                    success(data.data);
+                }, function (error) {
+                    console.log("fetchProject: error: " + error);
+                });
+            };
             ApiWork.prototype.addProject = function (body, success) {
                 body.session = this.session;
                 this.http.post(this.way + "/projects/project", body)
@@ -99,7 +107,7 @@ var ToDoApp;
                     .then(function (data) {
                     success();
                 }, function (error) {
-                    console.log("editProject: error: " + error);
+                    console.log("editProject: error");
                 });
             };
             ApiWork.prototype.deleteProject = function (idProject, success) {
@@ -141,11 +149,20 @@ var ToDoApp;
                 }
             };
             ApiWork.prototype.doneTask = function (body, success) {
+                body.session = this.session;
                 this.http.post(this.way + "/tasks/task/complite", body)
                     .then(function (data) {
                     success();
                 }, function (error) {
                     console.log("doneTask: error:" + error);
+                });
+            };
+            ApiWork.prototype.fetchTask = function (idTask, success) {
+                this.http.get(this.way + '/tasks/task?session=' + this.session + "&task_id=" + idTask)
+                    .then(function (data) {
+                    success(data.data);
+                }, function (error) {
+                    console.log("fetchTask: error: " + error.toString());
                 });
             };
             return ApiWork;

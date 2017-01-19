@@ -1,0 +1,23 @@
+div.right-panel
+	div.head-panel
+		md-button.close.icons8-delete-2(ng-click="c.close()")
+			span ESC
+		h2 {{c.panelHeader}} 
+		div.panel-actions(ng-show = "c.isShowTask")
+			md-button.edit.icons8-edit(ng-click= "c.goToEditTask()" aria-label="Edit task")
+			md-button.delete.icons8-delete(ng-click="c.dlTask()" aria-label="Delete task")
+
+	div.panel-body(ng-show = "c.isShowTask") {{c.panelBody}}
+
+	div.new-task(ng-show = "!c.isShowTask")
+		div(layout-gt-sm="row")
+			md-input-container.md-block(flex-gt-sm="")
+				label Task name
+				input(ng-model="c.taskName")
+		div(layout-gt-sm="row")
+			md-input-container.md-block(flex-gt-sm="")
+				label Description
+				input(ng-model="c.taskDescription")
+
+	md-button.md-fab.check-task(aria-label="Check task" ng-click="c.saveTask()" ng-show="!c.isShowTask")
+		i.icons8-checkmark

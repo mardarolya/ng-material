@@ -26,6 +26,10 @@ body {
   width: 25%;
   max-width: 340px;
 }
+.conteiner .dark-background.md-sidenav-right {
+  width: 30%;
+  max-width: 925px;
+}
 .conteiner .conteiner-sidebar {
   position: relative;
   margin: 20px 0 22px 0;
@@ -78,12 +82,13 @@ body {
   margin: 0;
   padding: 0;
 }
+.conteiner .conteiner-projects {
+  max-height: 90%;
+  overflow-y: auto;
+}
 .conteiner .item-project {
   padding: 0;
   margin: 0;
-}
-.conteiner .conteiner-sidebar .item-project:nth-child(1) {
-  color: #6b6b99;
 }
 .conteiner .complete {
   display: table;
@@ -122,6 +127,9 @@ body {
   bottom: 10px;
   left: 30px;
 }
+.conteiner .log-out .md-button {
+  box-sizing: content-box;
+}
 .conteiner .no-transform {
   text-transform: none;
   text-align: center;
@@ -151,6 +159,23 @@ body {
 }
 .conteiner .button-more {
   right: 0;
+}
+.conteiner md-select.button-more .md-select-value {
+  position: relative;
+  border-bottom-color: transparent;
+}
+.conteiner md-select.button-more .md-select-value > span:not(.md-select-icon) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: -5px;
+}
+.conteiner md-select.button-more .md-select-value > span:not(.md-select-icon) .md-text {
+  font-size: 18px;
+}
+.conteiner md-select.button-more .md-select-value .md-select-icon:after {
+  content: "";
 }
 .conteiner .display-none {
   display: none;
@@ -221,6 +246,9 @@ body {
   outline: none;
   box-shadow: none;
 }
+md-option {
+  font-size: 18px;
+}
 md-radio-button {
   display: inline-block;
 }
@@ -247,28 +275,15 @@ md-radio-button .md-ink-ripple .md-off {
 .md-fab.check-task {
   z-index: 72;
 }
-.for-right-panel {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 70;
-}
 .right-panel {
-  position: absolute;
-  width: 35%;
   height: 100%;
-  right: 0;
-  top: 0;
   background-color: #292c33;
   z-index: 71;
   color: white;
+  border: 1px solid transparent;
 }
 .head-panel {
   position: relative;
-  border: 1px solid transparent;
   margin-top: 20px;
   margin-bottom: 25px;
   min-height: 35px;
@@ -339,4 +354,10 @@ md-radio-button .md-ink-ripple .md-off {
 .new-task md-input-container input,
 .new-task md-input-container.md-input-focused:not(.md-input-invalid) .md-input {
   border-color: #f6f6f6;
+}
+md-backdrop.md-sidenav-backdrop {
+  z-index: 61;
+}
+.md-sidenav-right {
+  z-index: 62;
 }

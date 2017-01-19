@@ -1,0 +1,27 @@
+
+<div class="right-panel">
+  <div class="head-panel">
+    <md-button ng-click="c.close()" class="close icons8-delete-2"><span>ESC</span></md-button>
+    <h2>{{c.panelHeader}} </h2>
+    <div ng-show="c.isShowTask" class="panel-actions">
+      <md-button ng-click="c.goToEditTask()" aria-label="Edit task" class="edit icons8-edit"></md-button>
+      <md-button ng-click="c.dlTask()" aria-label="Delete task" class="delete icons8-delete"></md-button>
+    </div>
+  </div>
+  <div ng-show="c.isShowTask" class="panel-body">{{c.panelBody}}</div>
+  <div ng-show="!c.isShowTask" class="new-task">
+    <div layout-gt-sm="row">
+      <md-input-container flex-gt-sm="" class="md-block">
+        <label>Task name</label>
+        <input ng-model="c.taskName"/>
+      </md-input-container>
+    </div>
+    <div layout-gt-sm="row">
+      <md-input-container flex-gt-sm="" class="md-block">
+        <label>Description</label>
+        <input ng-model="c.taskDescription"/>
+      </md-input-container>
+    </div>
+  </div>
+  <md-button aria-label="Check task" ng-click="c.saveTask()" ng-show="!c.isShowTask" class="md-fab check-task"><i class="icons8-checkmark"></i></md-button>
+</div>

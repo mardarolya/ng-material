@@ -14,11 +14,9 @@ module ToDoApp.StartPage {
         public tasks: any;
         public loaded: boolean;
         public mdSidenav: any;
-
         private state: any;
-
         
-    	constructor($http, $mdSidenav, $state){
+    	constructor($http, $mdSidenav, $state, $scope){
            super($http); 
 
            this.mdSidenav = $mdSidenav;
@@ -31,9 +29,27 @@ module ToDoApp.StartPage {
            this.getUserInfo((data: any) => {
                this.currentUser = data.Account.username;
                let photo = document.querySelector(".with-frame img");
-               photo.src = data.Account.image_url;
-               
-               this.getProgects((data: any) => {
+               photo.src = data.Account.image_url;               
+               this.getProj();
+           });
+
+           $scope.$watch(
+                () => {return this.mdSidenav("rightPanel").isOpen()},
+                (newValue, oldValue) => {
+                  if (oldValue == true && newValue == false) {
+                      let reloadProject = localStorage.getItem("reloadProject");
+                      if (reloadProject && reloadProject == "true") {
+                          this.getProj();
+                          localStorage.removeItem("reloadProject");
+                      }
+                  }
+                  
+                });
+
+    	}
+
+        public getProj(){
+            this.getProgects((data: any) => {
                     this.projects = data.projects;
                     if (this.currentProjectId == 0) {
                        this.currentProjectId = this.projects[0].Project.id;
@@ -41,13 +57,12 @@ module ToDoApp.StartPage {
                     this.loaded = true;
                     this.getTasks(this.currentProjectId);
                });
-           });
-    	}
+        }
 
         public getTasks(projectID: number) {
             this.currentProjectId = projectID;
             this.getProjectTasks(this.currentProjectId, 0, (data: any) => {
-                        this.taskList(data);
+                this.taskList(data);
             });
         }
 
@@ -134,9 +149,36 @@ module ToDoApp.StartPage {
             }
         }
         
-        public openRightPanel(){
+        public openForAddProject(){
             this.mdSidenav("rightPanel").open();
             this.state.go("StartPage.Project", { projectId: 0 });
+        }
+
+        public openForEditProject(){
+            this.mdSidenav("rightPanel").open();
+            this.state.go("StartPage.Project", { projectId: this.currentProjectId });
+        }
+
+        public delProject(){
+            this.deleteProject(this.currentProjectId, () => {
+                this.getProj();
+            })
+        }
+
+        public openForAddTask(){
+            this.mdSidenav("rightPanel").open();
+            this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" });
+        }
+
+        public openForShowTask(idTask: number){
+            this.mdSidenav("rightPanel").open();
+            this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" });
+        }
+
+        public taskDone(idTask: number){
+            this.doneTask({session: "", Task: {id: idTask}}, () => {
+                this.getProj();
+            });
         }
     }
 

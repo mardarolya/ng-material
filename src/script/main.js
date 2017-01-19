@@ -5,7 +5,8 @@ var ToDoApp;
     var toDoApp = angular
         .module("ToDoApp", ["ngMaterial", "ui.router",
         "ToDoApp.StartPage",
-        "ToDoApp.Project"])
+        "ToDoApp.Project",
+        "ToDoApp.Task"])
         .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('StartPage', {
@@ -15,17 +16,17 @@ var ToDoApp;
             controllerAs: "c"
         })
             .state('StartPage.Project', {
-            url: "/Project?projectId",
+            url: "/Project?:projectId",
             templateUrl: "view/project/project.html",
             controller: "project",
             controllerAs: "c"
+        })
+            .state('StartPage.Task', {
+            url: "/Task?:taskId:projectId:state",
+            templateUrl: "view/task/task.html",
+            controller: "task",
+            controllerAs: "c"
         });
-        // .state('Task', {
-        //  			url: "/Task?taskdId",
-        //  			templateUrl: "view/task/task.html",
-        //  			controller:"task",
-        // 		controllerAs: "c"
-        // });
         $urlRouterProvider.otherwise('/StartPage');
     });
 })(ToDoApp || (ToDoApp = {}));

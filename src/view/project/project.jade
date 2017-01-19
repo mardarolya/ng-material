@@ -1,6 +1,6 @@
-form
+div.right-panel
 	div.head-panel
-		md-button.close.icons8-delete-2(ng-click="c.closePanel()")
+		md-button.close.icons8-delete-2(ng-click="c.close()")
 			span ESC
 		h2 {{c.panelHeader}} 
 
@@ -8,8 +8,8 @@ form
 		div(layout-gt-sm="row")
 			md-input-container.md-block(flex-gt-sm="")
 				label ProjectName
-				input(ng-model="c.nameProject")
+				input(ng-model="c.nameProject" required="")
 
-	md-button.md-fab.check-task(aria-label="Check task" ng-click="c.okPanel()")
+	md-button.md-fab.check-task(aria-label="Check task" ng-click="c.saveProject()")
 		i.icons8-checkmark
 
