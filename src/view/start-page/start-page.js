@@ -20,6 +20,7 @@ var ToDoApp;
                 _this.currentProjectId = 0;
                 _this.loaded = false;
                 _this.state = $state;
+                _this.showNav = false;
                 _this.getUserInfo(function (data) {
                     _this.currentUser = data.Account.username;
                     var photo = document.querySelector(".with-frame img");
@@ -51,14 +52,16 @@ var ToDoApp;
             StartPageApp.prototype.getTasks = function (projectID) {
                 var _this = this;
                 this.currentProjectId = projectID;
+                this.setActive();
                 this.getProjectTasks(this.currentProjectId, 0, function (data) {
+                    if (!document.querySelector(".item-project .active")) {
+                        _this.setActive();
+                    }
+                    _this.isShowNav();
                     _this.taskList(data);
                 });
             };
-            StartPageApp.prototype.taskList = function (data) {
-                var tasks = data.tasks;
-                var dtParts = [];
-                this.tasks = [];
+            StartPageApp.prototype.setActive = function () {
                 var oldEl = document.querySelector(".item-project .active");
                 if (oldEl) {
                     oldEl.classList.remove("active");
@@ -67,6 +70,11 @@ var ToDoApp;
                 if (newEl) {
                     newEl.classList.add("active");
                 }
+            };
+            StartPageApp.prototype.taskList = function (data) {
+                var tasks = data.tasks;
+                var dtParts = [];
+                this.tasks = [];
                 for (var i = 0, max = tasks.length; i < max; i++) {
                     dtParts = ((tasks[i].Task.created_at).split(" ")[0]).split("-");
                     var date = dtParts[2] + "." + dtParts[1] + "." + dtParts[0];
@@ -155,8 +163,29 @@ var ToDoApp;
                     _this.getProj();
                 });
             };
+            StartPageApp.prototype.close = function () {
+                this.mdSidenav("rightPanel").close();
+            };
+            StartPageApp.prototype.isShowNav = function () {
+                var conteiner = document.querySelector(".conteiner-projects");
+                var flowConteiner = document.querySelector(".flow-conteiner");
+                this.showNav = conteiner.offsetHeight < flowConteiner.offsetHeight;
+            };
             return StartPageApp;
         }(ToDoApp.Api.ApiWork));
-        startPage.controller("startPageApp", StartPageApp);
+        startPage.controller("startPageApp", StartPageApp)
+            .directive('ngEsc', function () {
+            return function (scope, element, attrs) {
+                element.bind("keydown keypress keyup", function (event) {
+                    if (event.which === 27) {
+                        scope.$apply(function () {
+                            scope.$eval(attrs.ngEsc);
+                        });
+                        event.preventDefault();
+                    }
+                });
+            };
+        });
+        ;
     })(StartPage = ToDoApp.StartPage || (ToDoApp.StartPage = {}));
 })(ToDoApp || (ToDoApp = {}));

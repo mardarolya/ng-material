@@ -1,7 +1,7 @@
 
 md-progress-linear(md-mode="indeterminate" ng-show="!c.loaded")
 
-div.conteiner(layout="row" ng-show="c.loaded")
+div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 	md-sidenav.dark-background(md-is-locked-open="true")
 		div.conteiner-sidebar(layout="column")
 			md-list-item.user
@@ -16,15 +16,20 @@ div.conteiner(layout="row" ng-show="c.loaded")
 					span.icons8-plus
 
 			div.conteiner-projects
-				div.item-project(ng-repeat="project in c.projects")
-					md-button.full-width.list-item(id="id_{{project.Project.id}}" aria-label="Project" ng-click="c.getTasks(project.Project.id)")
-						span.to-left  {{project.Project.title}}
-						span.to-right {{project.Project.task_count}}
+				div.flow-conteiner
+					div.item-project(ng-repeat="project in c.projects")
+						md-button.full-width.list-item(id="id_{{project.Project.id}}" aria-label="Project" ng-click="c.getTasks(project.Project.id)")
+							span.to-left  {{project.Project.title}}
+							span.to-right {{project.Project.task_count}}
 
 		
 		md-list-item.log-out
 			md-button.to-left
 				span.no-transform Log Out
+			md-button(ng-show="c.showNav").to-left.nav
+				span.no-transform UP
+			md-button(ng-show="c.showNav").to-left.nav
+				span.no-transform DOWN		
 
 	md-content(flex) 
 		md-input-container.md-block.search(md-no-float="")
@@ -32,9 +37,13 @@ div.conteiner(layout="row" ng-show="c.loaded")
 		md-button.button-search(aria-label="Search")
 			i.icons8-search
 
-		md-select.button-more(placeholder="..." ng-model="projectAction" )
-			md-option(value="Edit" ng-click="c.openForEditProject()") Edit project
-			md-option(value="Delete" ng-click="c.delProject()") Delete project
+		md-menu.button-more(md-position-mode="target-right target")
+			md-button.icons8-more(aria-label="Work with Project" ng-click="$mdOpenMenu($event)")
+			md-menu-content(width="4")
+				md-menu-item
+					md-button(ng-click="c.openForEditProject()") Edit project
+				md-menu-item
+					md-button(ng-click="c.delProject()") Delete project
 
 		div.complete(layout="column" ng-show="c.tasks.length == 0")
 			span
@@ -49,7 +58,7 @@ div.conteiner(layout="row" ng-show="c.loaded")
 					md-card-content(ng-repeat = "name in task.names")
 						md-radio-group
 							md-radio-button.md-primary(value="false" ng-click="c.taskDone(name.id)")
-						div.task-name(ng-click="c.openForShowTask(name.id)")
+						div.task-name(ng-click="c.openForShowTask(name.id)") 
 							span {{name.name}}
 
 		md-button.md-fab.add-task(aria-label="Add task" ng-click="c.openForAddTask()")

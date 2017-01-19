@@ -14,6 +14,7 @@ module ToDoApp.StartPage {
         public tasks: any;
         public loaded: boolean;
         public mdSidenav: any;
+        public showNav: boolean;
         private state: any;
         
     	constructor($http, $mdSidenav, $state, $scope){
@@ -25,11 +26,12 @@ module ToDoApp.StartPage {
            this.currentProjectId = 0;
            this.loaded = false;
            this.state = $state;
+           this.showNav = false;
 
            this.getUserInfo((data: any) => {
                this.currentUser = data.Account.username;
                let photo = document.querySelector(".with-frame img");
-               photo.src = data.Account.image_url;               
+               photo.src = data.Account.image_url;  
                this.getProj();
            });
 
@@ -61,9 +63,25 @@ module ToDoApp.StartPage {
 
         public getTasks(projectID: number) {
             this.currentProjectId = projectID;
+            this.setActive();
             this.getProjectTasks(this.currentProjectId, 0, (data: any) => {
+                if (!document.querySelector(".item-project .active")) {
+                    this.setActive();
+                }
+                this.isShowNav()
                 this.taskList(data);
             });
+        }
+
+        public setActive(){
+            let oldEl = document.querySelector(".item-project .active");
+            if (oldEl) {
+              oldEl.classList.remove("active");  
+            }   
+            let newEl = document.querySelector(".item-project #id_"+this.currentProjectId);
+            if (newEl) {
+              newEl.classList.add("active");  
+            }
         }
 
         public taskList(data: any) {
@@ -71,15 +89,6 @@ module ToDoApp.StartPage {
             let dtParts = [];
             this.tasks = [];
 
-            var oldEl = document.querySelector(".item-project .active");
-            if (oldEl) {
-              oldEl.classList.remove("active");  
-            }   
-            var newEl = document.querySelector(".item-project #id_"+this.currentProjectId);
-            if (newEl) {
-              newEl.classList.add("active");  
-            }
-            
             for(let i = 0, max = tasks.length; i < max; i++) {
                 dtParts = ((tasks[i].Task.created_at).split(" ")[0]).split("-");
                 let date = dtParts[2] + "." + dtParts[1] + "." +dtParts[0];
@@ -180,7 +189,30 @@ module ToDoApp.StartPage {
                 this.getProj();
             });
         }
+
+        public close(){
+             this.mdSidenav("rightPanel").close();
+        }
+
+        public isShowNav(){
+            let conteiner = document.querySelector(".conteiner-projects");
+            let flowConteiner = document.querySelector(".flow-conteiner");
+            this.showNav = conteiner.offsetHeight < flowConteiner.offsetHeight
+        }
     }
 
-    startPage.controller("startPageApp", StartPageApp);
+    startPage.controller("startPageApp", StartPageApp)
+             .directive('ngEsc', function () {
+                return (scope, element, attrs) => {
+                    element.bind("keydown keypress keyup", function (event) {
+                        if(event.which === 27) {
+                            scope.$apply(function (){
+                                scope.$eval(attrs.ngEsc);
+                            });
+
+                            event.preventDefault();
+                        }
+                    });
+    };
+});;
 }

@@ -99,8 +99,16 @@ body {
 	}
 
 	.conteiner-projects {
-		max-height: 90%;
-		overflow-y: auto;
+		position: relative;
+		height: 72%;
+		overflow: hidden;
+
+		.flow-conteiner {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+		}		
 	}
 
 	.item-project {
@@ -141,6 +149,11 @@ body {
 		float: left;
 		max-width: 90%;
 		overflow: hidden;
+		text-overflow: ellipsis;
+
+		&.nav {
+			min-width: 40px;
+		}
 	}
 
 	.to-right {
@@ -192,27 +205,21 @@ body {
 
 	.button-more {
 		right: 0;
+
+		.md-button {
+			height: 50px;
+		    min-width: 50px;
+		    width: 60px;
+		    margin: 0;
+		    padding: 0;
+		    font-size: 30px;
+		}
 	}
 
 	md-select.button-more .md-select-value {
 		position: relative;
 		border-bottom-color: transparent;
-
-		& > span:not(.md-select-icon){
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			margin-top: -5px;
-
-			.md-text {
-				font-size: 18px;
-			}
-		}
-
-		.md-select-icon:after {
-			content: "";
-		}
+		
 	}
 
 	.display-none {
@@ -283,13 +290,18 @@ body {
 			border-left: 2px solid #f4f4f4;
 			vertical-align: middle;
 			padding-left: 15px;
-		    min-height: 36px;
-		    max-width: 75%;
+		    height: 36px;
+		    max-width: 80%;
 		    cursor: pointer;
+		    margin-left: 20px;
+		    overflow: hidden;
+    		text-overflow: ellipsis;
 
-		    span {
-		    	word-wrap: break-word;
-		    }
+    		span {
+    			max-width: 90%;
+    			overflow: hidden;
+    			text-overflow: ellipsis;
+    		}
 
 		    &:focus {
 		    	outline: none;
@@ -343,7 +355,7 @@ md-radio-button {
 } 
 
 .right-panel {
-	height: 100%;
+	height: 99%;
     background-color: #292c33;
     z-index: 71;
     color: white;
@@ -358,13 +370,14 @@ md-radio-button {
 
 	.close{
 		position: absolute;
-		left: 0;
+		left: 10px;
 		top: 0;
 		font-size: 25px;
 		line-height: 25px;
 		margin: 0;
-		min-width: 50px;
+		min-width: 40px;
 		min-height: 30px;
+		height: 45px;
 
 		span {
 			display: block;
@@ -442,4 +455,8 @@ md-backdrop.md-sidenav-backdrop {
 
 .md-sidenav-right {
 	z-index: 62;
+}
+
+md-input-container:not(.md-input-invalid).md-input-has-value label {
+	color: #f6f6f6;
 }
