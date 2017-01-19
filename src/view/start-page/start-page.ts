@@ -57,6 +57,7 @@ module ToDoApp.StartPage {
                        this.currentProjectId = this.projects[0].Project.id;
                     }
                     this.loaded = true;
+                    this.isShowNav();
                     this.getTasks(this.currentProjectId);
                });
         }
@@ -68,7 +69,6 @@ module ToDoApp.StartPage {
                 if (!document.querySelector(".item-project .active")) {
                     this.setActive();
                 }
-                this.isShowNav()
                 this.taskList(data);
             });
         }
@@ -170,6 +170,7 @@ module ToDoApp.StartPage {
 
         public delProject(){
             this.deleteProject(this.currentProjectId, () => {
+                this.currentProjectId = 0;
                 this.getProj();
             })
         }
@@ -198,6 +199,30 @@ module ToDoApp.StartPage {
             let conteiner = document.querySelector(".conteiner-projects");
             let flowConteiner = document.querySelector(".flow-conteiner");
             this.showNav = conteiner.offsetHeight < flowConteiner.offsetHeight
+        }
+
+        public upList(){
+          let parent = document.querySelector(".conteiner-projects");
+          let child = document.querySelector(".flow-conteiner");
+          let parentBottom = (parent.getBoundingClientRect()).bottom;
+          let childBottom = (child.getBoundingClientRect()).bottom;
+          
+          if (childBottom > parentBottom) {
+            let childTop = parseInt(child.style.top);
+            child.style.top = (childTop - 40) + "px"; 
+          }
+        }
+
+        public downList(){
+          let parent = document.querySelector(".conteiner-projects");
+          let child = document.querySelector(".flow-conteiner");
+          let parentTop = (parent.getBoundingClientRect()).top;
+          let childTop = (child.getBoundingClientRect()).top;
+          
+          if (childTop < parentTop) {
+            let childTop = parseInt(child.style.top);
+            child.style.top = (childTop + 40) + "px"; 
+          }
         }
     }
 

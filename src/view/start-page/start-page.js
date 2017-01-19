@@ -46,6 +46,7 @@ var ToDoApp;
                         _this.currentProjectId = _this.projects[0].Project.id;
                     }
                     _this.loaded = true;
+                    _this.isShowNav();
                     _this.getTasks(_this.currentProjectId);
                 });
             };
@@ -57,7 +58,6 @@ var ToDoApp;
                     if (!document.querySelector(".item-project .active")) {
                         _this.setActive();
                     }
-                    _this.isShowNav();
                     _this.taskList(data);
                 });
             };
@@ -146,6 +146,7 @@ var ToDoApp;
             StartPageApp.prototype.delProject = function () {
                 var _this = this;
                 this.deleteProject(this.currentProjectId, function () {
+                    _this.currentProjectId = 0;
                     _this.getProj();
                 });
             };
@@ -170,6 +171,26 @@ var ToDoApp;
                 var conteiner = document.querySelector(".conteiner-projects");
                 var flowConteiner = document.querySelector(".flow-conteiner");
                 this.showNav = conteiner.offsetHeight < flowConteiner.offsetHeight;
+            };
+            StartPageApp.prototype.upList = function () {
+                var parent = document.querySelector(".conteiner-projects");
+                var child = document.querySelector(".flow-conteiner");
+                var parentBottom = (parent.getBoundingClientRect()).bottom;
+                var childBottom = (child.getBoundingClientRect()).bottom;
+                if (childBottom > parentBottom) {
+                    var childTop = parseInt(child.style.top);
+                    child.style.top = (childTop - 40) + "px";
+                }
+            };
+            StartPageApp.prototype.downList = function () {
+                var parent = document.querySelector(".conteiner-projects");
+                var child = document.querySelector(".flow-conteiner");
+                var parentTop = (parent.getBoundingClientRect()).top;
+                var childTop = (child.getBoundingClientRect()).top;
+                if (childTop < parentTop) {
+                    var childTop_1 = parseInt(child.style.top);
+                    child.style.top = (childTop_1 + 40) + "px";
+                }
             };
             return StartPageApp;
         }(ToDoApp.Api.ApiWork));
