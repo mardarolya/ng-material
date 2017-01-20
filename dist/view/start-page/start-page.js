@@ -83,7 +83,7 @@ var ToDoApp;
                 var tasksForWork = data.tasks;
                 var dtParts = [];
                 this.tasks = [];
-                for (var i = 0, max = tasksForWork.length; i < max; i++) {
+                for (var i = tasksForWork.length - 1, min = 0; i >= min; i--) {
                     dtParts = ((tasksForWork[i].Task.created_at).split(" ")[0]).split("-");
                     var date = new Date(parseInt(dtParts[0]), parseInt(dtParts[1]) - 1, parseInt(dtParts[2]));
                     var done = false;

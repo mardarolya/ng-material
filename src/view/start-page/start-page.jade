@@ -52,7 +52,7 @@ div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 				span Have a good day
 
 		div.task-conteiner(layout="column")
-			div.task(ng-repeat = "task in c.tasks | orderBy: task.date.dateNum" class="task")
+			div.task(ng-repeat = "task in c.tasks" class="task")
 				span.task-date {{task.date.display}}
 				md-card
 					md-card-content(ng-repeat = "name in task.names | filter: c.searchTask")

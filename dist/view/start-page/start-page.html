@@ -39,7 +39,7 @@
     </md-menu>
     <div layout="column" ng-show="c.tasks.length == 0" class="complete"><span><i class="icons8-todo-list"></i><br/><span>Have a good day</span></span></div>
     <div layout="column" class="task-conteiner">
-      <div ng-repeat="task in c.tasks | orderBy: task.date.dateNum" class="task task"><span class="task-date">{{task.date.display}}</span>
+      <div ng-repeat="task in c.tasks" class="task task"><span class="task-date">{{task.date.display}}</span>
         <md-card>
           <md-card-content ng-repeat="name in task.names | filter: c.searchTask">
             <md-radio-group>

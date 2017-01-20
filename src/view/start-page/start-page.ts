@@ -100,7 +100,7 @@ module ToDoApp.StartPage {
             let dtParts = [];
             this.tasks = [];
 
-            for(let i = 0, max = tasksForWork.length; i < max; i++) {
+            for(let i = tasksForWork.length -1 , min = 0; i >= min; i--) {
                 dtParts = ((tasksForWork[i].Task.created_at).split(" ")[0]).split("-");
                 let date = new Date(parseInt(dtParts[0]), parseInt(dtParts[1])-1, parseInt(dtParts[2])); 
                 let done = false;
