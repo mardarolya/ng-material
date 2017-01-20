@@ -213,8 +213,8 @@ body {
 }
 .conteiner .task-conteiner {
   margin: 0 auto;
-  width: 60%;
-  max-height: 87%;
+  width: 100%;
+  height: 90%;
   overflow-y: auto;
 }
 .conteiner .task-conteiner md-card {
@@ -247,6 +247,8 @@ body {
 }
 .conteiner .task-conteiner .task {
   margin-bottom: 6px;
+  width: 60%;
+  margin: 0 auto;
 }
 .conteiner .task-conteiner .task md-card {
   margin-top: 6px;
@@ -297,7 +299,7 @@ md-radio-button .md-ink-ripple .md-off {
 }
 .md-fab.add-task,
 .md-fab.check-task {
-  position: absolute;
+  position: fixed;
   z-index: 2;
   bottom: 30px;
   right: 30px;
