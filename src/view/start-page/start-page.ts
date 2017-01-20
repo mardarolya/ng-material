@@ -34,14 +34,15 @@ module ToDoApp.StartPage {
            this.searchTask = "";
            this.showSearch = true;
 
-
-           this.getUserInfo((data: any) => {
-               this.currentUser = data.Account.username;
-               let photo = document.querySelector(".with-frame img");
-               photo.src = data.Account.image_url;  
-               this.getProj();
+           this.isSessionAlive(() => {
+              this.getUserInfo((data: any) => {
+                this.currentUser = data.Account.username;
+                let photo = document.querySelector(".with-frame img");
+                photo.src = data.Account.image_url;  
+                this.getProj();
+              });
            });
-
+           
            $scope.$watch(
                 () => {return this.mdSidenav("rightPanel").isOpen()},
                 (newValue, oldValue) => {
@@ -73,6 +74,7 @@ module ToDoApp.StartPage {
         public getTasks(projectID: number) {
             this.currentProjectId = projectID;
             this.setActive();
+            this.showSearch = true;
             this.getProjectTasks(this.currentProjectId, 0, (data: any) => {
                 if (!document.querySelector(".item-project .active")) {
                     this.setActive();

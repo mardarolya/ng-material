@@ -58,29 +58,31 @@ module ToDoApp.Api {
     		this.http = $http;
     		this.way = "https://api-test-task.decodeapps.io";
     		this.session = this.getCookie("mySession");
-    		this.isSessionAlive();
     	}
 
-    	private isSessionAlive() {
+    	public isSessionAlive(success: (() => void)) {
     		if (this.session && this.session != "") {
     			this.http.get(this.way + '/session?session=' + this.session)
-                    .then((data: any) => {},
+                    .then((data: any) => {
+                        success();
+                    },
                     (error) => {
-                       this.createSession();
+                       this.createSession(success);
                     });  
     		} else {
-    			this.createSession();
+    			this.createSession(success);
     		}
     	}
 
-    	private createSession() {
+    	private createSession(success: (() => void)) {
     		this.http.post(this.way + '/signup', {"New item":""})
             	.then((data: any) => {
             		this.session = data.data.session;	
                 	this.setCookie("mySession", data.data.session, null);
+                    success();
             	},
             	(error: any) =>{
-              		console.log("Create session: error:" + error);
+              		console.log(error);
             	});		
     	}
 
@@ -125,7 +127,7 @@ module ToDoApp.Api {
                       success(data.data);
                     },
                     (error:any) => {
-                      console.log("getUserInfo: error: " + error);
+                      console.log(error);
                     });  
         }
 
@@ -136,7 +138,7 @@ module ToDoApp.Api {
                     	 success(data.data);
                     },                     
                     (error: any) => {
-                        console.log("getProgects: error: " + error);
+                        console.log(error);
                     });  
         }
 
@@ -148,7 +150,7 @@ module ToDoApp.Api {
             	success(data.data);
             },
             	(error: any) => {
-            		console.log("getProjectTasks(" + idProject + ", " + offset + "): error: " + error);
+            		console.log(error);
             	});
         }
 
@@ -159,7 +161,7 @@ module ToDoApp.Api {
                     	 success(data.data);
                     },                     
                     (error: any) => {
-                        console.log("fetchProject: error: " + error);
+                        console.log(error);
                     });  
         }
 
@@ -170,7 +172,7 @@ module ToDoApp.Api {
                         success();
                     },
                     (error: any) => {
-                        console.log("addProject: error: " + error);
+                        console.log(error);
                 });
         }
 
@@ -181,7 +183,7 @@ module ToDoApp.Api {
                     success();
                 },
                 (error) => {
-                    console.log("editProject: error");
+                    console.log(error);
                 });
         }
 
@@ -192,7 +194,7 @@ module ToDoApp.Api {
                         success();
                     },                     
                     (error) => {
-                        console.log("deleteProject: error: " + error);
+                        console.log(error);
                 });  
             }
         }
@@ -204,7 +206,7 @@ module ToDoApp.Api {
                         success();
                     },
                     (error: any) => {
-                        console.log("addTask: error:" + error);
+                        console.log(error);
                     });
         }
 
@@ -215,7 +217,7 @@ module ToDoApp.Api {
                         success();
                 },
                 (error: any) => {
-                  console.log("editTask: error:" + error);
+                  console.log(error);
                 });
         }
 
@@ -226,7 +228,7 @@ module ToDoApp.Api {
                     success();
                 },                     
                 (error: any) => {
-                    console.log("deleteTask: error: " + error);
+                    console.log(error);
                 });  
             }
         }
@@ -238,7 +240,7 @@ module ToDoApp.Api {
                    success();
                 },
                 (error: any) => {
-                  console.log("doneTask: error:" + error);
+                  console.log(error);
                 });
         }
 
@@ -249,7 +251,7 @@ module ToDoApp.Api {
                     	 success(data.data);
                     },                     
                     (error: any) => {
-                        console.log("fetchTask: error: " + error.toString());
+                        console.log(error);
                     });  
         }
     }

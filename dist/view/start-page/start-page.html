@@ -1,0 +1,60 @@
+
+<md-progress-linear md-mode="indeterminate" ng-show="!c.loaded"></md-progress-linear>
+<div layout="row" ng-show="c.loaded" ng-esc="c.close()" class="conteiner">
+  <md-sidenav md-is-locked-open="true" class="dark-background">
+    <div layout="column" class="conteiner-sidebar">
+      <md-list-item class="user"><span class="with-frame"><img ng-src="image/TrevorReyes.jpg" width="50" height="50" class="md-avatar"/></span><span class="name-user">{{c.currentUser}}</span></md-list-item>
+      <div class="projects full-width"><span class="to-left">Projects</span>
+        <md-button aria-label="New project" ng-click="c.openForAddProject()" class="add-project"><span class="icons8-plus"></span></md-button>
+      </div>
+      <div class="conteiner-projects">
+        <div style="top: 0" class="flow-conteiner">
+          <div ng-repeat="project in c.projects" class="item-project">
+            <md-button id="id_{{project.Project.id}}" aria-label="Project" ng-click="c.getTasks(project.Project.id)" class="full-width list-item"><span class="to-left"> {{project.Project.title}}</span><span class="to-right">{{project.Project.task_count}}</span></md-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <md-list-item class="log-out">
+      <md-button aria-label="Left" class="to-left"><span class="no-transform">Log Out</span></md-button>
+      <md-button aria-label="Nav" ng-show="c.showNav" ng-click="c.upList()" class="to-left nav"><span class="no-transform up"> </span></md-button>
+      <md-button aria-label="Nav" ng-show="c.showNav" ng-click="c.downList()" class="to-left nav"><span class="no-transform down">	</span></md-button>
+    </md-list-item>
+  </md-sidenav>
+  <md-content flex="flex"> 
+    <md-input-container md-no-float="" class="md-block search">
+      <input aria-label="Search task" ng-model="c.searchTask" class="search-task"/>
+    </md-input-container>
+    <md-button aria-label="Search" ng-show="c.searchTask == '' &amp;&amp; c.showSearch" ng-click="c.goToSearch()" class="button-search"><i class="icons8-search"></i></md-button>
+    <md-menu md-position-mode="target-right target" class="button-more">
+      <md-button aria-label="Work with Project" ng-click="$mdOpenMenu($event)" class="icons8-more"></md-button>
+      <md-menu-content width="4">
+        <md-menu-item>
+          <md-button aria-label="Edit project" ng-click="c.openForEditProject()">Edit project</md-button>
+        </md-menu-item>
+        <md-menu-item>
+          <md-button aria-label="Delete project" ng-click="c.delProject()">Delete project</md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+    <div layout="column" ng-show="c.tasks.length == 0" class="complete"><span><i class="icons8-todo-list"></i><br/><span>Have a good day</span></span></div>
+    <div layout="column" class="task-conteiner">
+      <div ng-repeat="task in c.tasks | orderBy: task.date.dateNum" class="task task"><span class="task-date">{{task.date.display}}</span>
+        <md-card>
+          <md-card-content ng-repeat="name in task.names | filter: c.searchTask">
+            <md-radio-group>
+              <md-radio-button value="false" ng-click="c.taskDone(name.id)" aria-label="Task" class="md-primary"></md-radio-button>
+            </md-radio-group>
+            <div ng-click="c.openForShowTask(name.id)" class="task-name"> <span>{{name.name}}</span></div>
+          </md-card-content>
+        </md-card>
+      </div>
+    </div>
+    <md-button aria-label="Add task" ng-click="c.openForAddTask()" class="md-fab add-task"><i class="icons8-plus"></i></md-button>
+  </md-content>
+  <md-sidenav md-component-id="rightPanel" class="md-sidenav-right md-whiteframe-4dp dark-background">		
+    <md-content>
+      <div class="ui-view"></div>
+    </md-content>
+  </md-sidenav>
+</div>

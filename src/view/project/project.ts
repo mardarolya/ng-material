@@ -34,7 +34,7 @@ module ToDoApp.Project {
     	}
 
     	public saveProject(){
-    		if (this.nameProject && this.nameProject != "") {
+    		if (this.nameProject && this.nameProject != "" && this.nameProject.charCodeAt() != 127) {
     			if (this.idProject == 0) {
 	    			this.addProject({session: "", Project: {title: this.nameProject}}, () => {
 	    				localStorage.setItem("reloadProject", "true");

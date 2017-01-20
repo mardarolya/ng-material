@@ -54,7 +54,7 @@ module ToDoApp.Task {
     	}
 
     	public saveTask(){
-    		if (this.taskName && this.taskName != "") {
+    		if (this.taskName && this.taskName != "" && this.taskName.charCodeAt() != 127) {
     			this.showError = false;
     			if (this.idTask == 0) {
 	    			this.addTask({session: "", Project: {id: this.idProject}, Task: {title: this.taskName, description: this.taskDescription}}, () => {

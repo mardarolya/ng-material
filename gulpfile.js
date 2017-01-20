@@ -45,27 +45,32 @@ gulp.task('whats-new', function(){
 
 
 // собираем в public
-gulp.task('public', function(){
+gulp.task('dist', function(){
 	// перенесем шрифты
-	gulp.src('./project/font/icons/*')
-	    .pipe(gulp.dest('./public/font/icons'), {overwrite: true}); 
-	gulp.src('./project/font/text/*')
-	    .pipe(gulp.dest('./public/font/text'), {overwrite: true});     
+	gulp.src('./src/font/icons/*')
+	    .pipe(gulp.dest('./dist/font/icons'), {overwrite: true}); 
+	gulp.src('./src/font/text/*')
+	    .pipe(gulp.dest('./dist/font/text'), {overwrite: true});     
 	// перенесем стили
-	gulp.src('./project/style/css/*.css')
+	gulp.src('./src/style/*.css')
 		.pipe(cssmin())	
 		.on('error', console.log)
-	    .pipe(gulp.dest('./public/style'), {overwrite: true}); 
+	    .pipe(gulp.dest('./dist/style'), {overwrite: true}); 
 	// перенесем скрипты
-	gulp.src('./project/script/js/*.js')
+	gulp.src('./src/script/*.js')
 		.pipe(jsmin())	
 		.on('error', console.log)
-	    .pipe(gulp.dest('./public/script'), {overwrite: true}); 
+	    .pipe(gulp.dest('./dist/script'), {overwrite: true}); 
+
 	// перенесем картинки
-	gulp.src('./project/image/*')
-	    .pipe(gulp.dest('./public/image'), {overwrite: true}); 
+	gulp.src('./src/image/*')
+	    .pipe(gulp.dest('./dist/image'), {overwrite: true}); 
+
+	gulp.src(['./src/view/*/*.js', './src/view/*/*.html'])
+	    .pipe(gulp.dest('./dist/view'), {overwrite: true});    
 	// перенесем index
-	gulp.src('./project/index.html')
-	    .pipe(gulp.dest('./public'), {overwrite: true});
+	gulp.src('./src/index.html')
+	    .pipe(gulp.dest('./dist'), {overwrite: true});
+
 });
 

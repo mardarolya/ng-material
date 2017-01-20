@@ -8,28 +8,30 @@ var ToDoApp;
                 this.http = $http;
                 this.way = "https://api-test-task.decodeapps.io";
                 this.session = this.getCookie("mySession");
-                this.isSessionAlive();
             }
-            ApiWork.prototype.isSessionAlive = function () {
+            ApiWork.prototype.isSessionAlive = function (success) {
                 var _this = this;
                 if (this.session && this.session != "") {
                     this.http.get(this.way + '/session?session=' + this.session)
-                        .then(function (data) { }, function (error) {
-                        _this.createSession();
+                        .then(function (data) {
+                        success();
+                    }, function (error) {
+                        _this.createSession(success);
                     });
                 }
                 else {
-                    this.createSession();
+                    this.createSession(success);
                 }
             };
-            ApiWork.prototype.createSession = function () {
+            ApiWork.prototype.createSession = function (success) {
                 var _this = this;
                 this.http.post(this.way + '/signup', { "New item": "" })
                     .then(function (data) {
                     _this.session = data.data.session;
                     _this.setCookie("mySession", data.data.session, null);
+                    success();
                 }, function (error) {
-                    console.log("Create session: error:" + error);
+                    console.log(error);
                 });
             };
             ApiWork.prototype.getCookie = function (name) {
@@ -63,7 +65,7 @@ var ToDoApp;
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
-                    console.log("getUserInfo: error: " + error);
+                    console.log(error);
                 });
             };
             ApiWork.prototype.getProgects = function (success) {
@@ -71,7 +73,7 @@ var ToDoApp;
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
-                    console.log("getProgects: error: " + error);
+                    console.log(error);
                 });
             };
             ApiWork.prototype.getProjectTasks = function (idProject, offset, success) {
@@ -81,7 +83,7 @@ var ToDoApp;
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
-                    console.log("getProjectTasks(" + idProject + ", " + offset + "): error: " + error);
+                    console.log(error);
                 });
             };
             ApiWork.prototype.fetchProject = function (idProject, success) {
@@ -89,7 +91,7 @@ var ToDoApp;
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
-                    console.log("fetchProject: error: " + error);
+                    console.log(error);
                 });
             };
             ApiWork.prototype.addProject = function (body, success) {
@@ -98,7 +100,7 @@ var ToDoApp;
                     .then(function (data) {
                     success();
                 }, function (error) {
-                    console.log("addProject: error: " + error);
+                    console.log(error);
                 });
             };
             ApiWork.prototype.editProject = function (body, success) {
@@ -107,7 +109,7 @@ var ToDoApp;
                     .then(function (data) {
                     success();
                 }, function (error) {
-                    console.log("editProject: error");
+                    console.log(error);
                 });
             };
             ApiWork.prototype.deleteProject = function (idProject, success) {
@@ -116,7 +118,7 @@ var ToDoApp;
                         .then(function () {
                         success();
                     }, function (error) {
-                        console.log("deleteProject: error: " + error);
+                        console.log(error);
                     });
                 }
             };
@@ -126,7 +128,7 @@ var ToDoApp;
                     .then(function (data) {
                     success();
                 }, function (error) {
-                    console.log("addTask: error:" + error);
+                    console.log(error);
                 });
             };
             ApiWork.prototype.editTask = function (body, success) {
@@ -135,7 +137,7 @@ var ToDoApp;
                     .then(function (data) {
                     success();
                 }, function (error) {
-                    console.log("editTask: error:" + error);
+                    console.log(error);
                 });
             };
             ApiWork.prototype.deleteTask = function (idTask, success) {
@@ -144,7 +146,7 @@ var ToDoApp;
                         .then(function () {
                         success();
                     }, function (error) {
-                        console.log("deleteTask: error: " + error);
+                        console.log(error);
                     });
                 }
             };
@@ -154,7 +156,7 @@ var ToDoApp;
                     .then(function (data) {
                     success();
                 }, function (error) {
-                    console.log("doneTask: error:" + error);
+                    console.log(error);
                 });
             };
             ApiWork.prototype.fetchTask = function (idTask, success) {
@@ -162,7 +164,7 @@ var ToDoApp;
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
-                    console.log("fetchTask: error: " + error.toString());
+                    console.log(error);
                 });
             };
             return ApiWork;
