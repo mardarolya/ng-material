@@ -62,7 +62,6 @@ module ToDoApp.Api {
     	}
 
     	private isSessionAlive() {
-            console.log("start");
     		if (this.session && this.session != "") {
     			this.http.get(this.way + '/session?session=' + this.session)
                     .then((data: any) => {},

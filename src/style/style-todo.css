@@ -128,7 +128,27 @@ body {
   text-overflow: ellipsis;
 }
 .conteiner .to-left.nav {
-  min-width: 40px;
+  position: relative;
+  min-width: 30px;
+  margin: 2px;
+}
+.conteiner .to-left.nav .up,
+.conteiner .to-left.nav .down {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  top: 50%;
+  left: 50%;
+}
+.conteiner .to-left.nav .up {
+  border-bottom-color: #6b6b99;
+  transform: translate(-50%, -75%);
+}
+.conteiner .to-left.nav .down {
+  border-top-color: #6b6b99;
+  transform: translate(-50%, -25%);
 }
 .conteiner .to-right {
   float: right;
@@ -366,6 +386,9 @@ md-radio-button .md-ink-ripple .md-off {
 .new-task md-input-container input,
 .new-task md-input-container.md-input-focused:not(.md-input-invalid) .md-input {
   border-color: #f6f6f6;
+}
+.new-task .error {
+  color: red;
 }
 md-backdrop.md-sidenav-backdrop {
   z-index: 61;

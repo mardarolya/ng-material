@@ -1,7 +1,7 @@
 
 <div class="right-panel">
   <div class="head-panel">
-    <md-button ng-click="c.close()" class="close icons8-delete-2"><span>ESC</span></md-button>
+    <md-button ng-click="c.close()" aria-label="Exit" class="close icons8-delete-2"><span>ESC</span></md-button>
     <h2>{{c.panelHeader}} </h2>
     <div ng-show="c.isShowTask" class="panel-actions">
       <md-button ng-click="c.goToEditTask()" aria-label="Edit task" class="edit icons8-edit"></md-button>
@@ -21,6 +21,9 @@
         <label>Description</label>
         <input ng-model="c.taskDescription"/>
       </md-input-container>
+    </div>
+    <div layout-gt-sm="row" ng-show="c.showError">
+      <p class="error">Fill the Task name, please			</p>
     </div>
   </div>
   <md-button aria-label="Check task" ng-click="c.saveTask()" ng-show="!c.isShowTask" class="md-fab check-task"><i class="icons8-checkmark"></i></md-button>

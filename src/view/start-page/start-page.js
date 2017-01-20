@@ -12,7 +12,7 @@ var ToDoApp;
         var startPage = angular.module("ToDoApp.StartPage", ["ui.router"]);
         var StartPageApp = (function (_super) {
             __extends(StartPageApp, _super);
-            function StartPageApp($http, $mdSidenav, $state, $scope) {
+            function StartPageApp($http, $mdSidenav, $state, $scope, $mdDialog) {
                 var _this = _super.call(this, $http) || this;
                 _this.mdSidenav = $mdSidenav;
                 _this.projects = [];
@@ -21,6 +21,9 @@ var ToDoApp;
                 _this.loaded = false;
                 _this.state = $state;
                 _this.showNav = false;
+                _this.mdDialog = $mdDialog;
+                _this.searchTask = "";
+                _this.showSearch = true;
                 _this.getUserInfo(function (data) {
                     _this.currentUser = data.Account.username;
                     var photo = document.querySelector(".with-frame img");
@@ -46,6 +49,7 @@ var ToDoApp;
                         _this.currentProjectId = _this.projects[0].Project.id;
                     }
                     _this.loaded = true;
+                    _this.showSearch = true;
                     _this.isShowNav();
                     _this.getTasks(_this.currentProjectId);
                 });
@@ -58,6 +62,7 @@ var ToDoApp;
                     if (!document.querySelector(".item-project .active")) {
                         _this.setActive();
                     }
+                    _this.isShowNav();
                     _this.taskList(data);
                 });
             };
@@ -72,68 +77,76 @@ var ToDoApp;
                 }
             };
             StartPageApp.prototype.taskList = function (data) {
-                var tasks = data.tasks;
+                var tasksForWork = data.tasks;
                 var dtParts = [];
                 this.tasks = [];
-                for (var i = 0, max = tasks.length; i < max; i++) {
-                    dtParts = ((tasks[i].Task.created_at).split(" ")[0]).split("-");
-                    var date = dtParts[2] + "." + dtParts[1] + "." + dtParts[0];
+                for (var i = 0, max = tasksForWork.length; i < max; i++) {
+                    dtParts = ((tasksForWork[i].Task.created_at).split(" ")[0]).split("-");
+                    var date = new Date(parseInt(dtParts[0]), parseInt(dtParts[1]) - 1, parseInt(dtParts[2]));
                     var done = false;
                     for (var k = 0, maxk = this.tasks.length; k < maxk; k++) {
-                        if (this.tasks[k].date == date) {
-                            this.tasks[k].names.push({ name: tasks[i].Task.title,
-                                description: tasks[i].Task.description,
-                                id: tasks[i].Task.id });
+                        if ((this.tasks[k].date.dateNum).toString() == date.toString()) {
+                            this.tasks[k].names.push({ name: tasksForWork[i].Task.title,
+                                description: tasksForWork[i].Task.description,
+                                id: tasksForWork[i].Task.id });
                             done = true;
                             break;
                         }
                     }
                     if (done == false) {
-                        this.tasks.push({ date: date, names: [{ name: tasks[i].Task.title,
-                                    description: tasks[i].Task.description,
-                                    id: tasks[i].Task.id }] });
-                    }
-                    for (var j = 0, maxj = this.tasks.length; j < maxj; j++) {
-                        dtParts = this.tasks[j].date.split(".");
-                        var dt = new Date(), dtTask = new Date(parseInt(dtParts[2]), parseInt(dtParts[1]) - 1, parseInt(dtParts[0])), d = dt.getDate(), m = dt.getMonth(), y = dt.getFullYear(), nameWeekDay = "";
-                        if (d == parseInt(dtParts[0]) && m == (parseInt(dtParts[1]) - 1) && y == parseInt(dtParts[2])) {
-                            this.tasks[j].date = "Today";
-                        }
-                        else if ((d == parseInt(dtParts[0]) + 1) && m == (parseInt(dtParts[1]) - 1) && y == parseInt(dtParts[2])) {
-                            this.tasks[j].date = "Tomorrow";
-                        }
-                        else {
-                            var weekDay = dtTask.getDay();
-                            var nameWeekDay = "";
-                            switch (weekDay) {
-                                case 0:
-                                    nameWeekDay = "Sunday";
-                                    break;
-                                case 1:
-                                    nameWeekDay = "Monday";
-                                    break;
-                                case 2:
-                                    nameWeekDay = "Tuesday";
-                                    break;
-                                case 3:
-                                    nameWeekDay = "Wednesday";
-                                    break;
-                                case 4:
-                                    nameWeekDay = "Thursday";
-                                    break;
-                                case 5:
-                                    nameWeekDay = "Friday";
-                                    break;
-                                case 6:
-                                    nameWeekDay = "Saturday";
-                                    break;
-                                default:
-                                    nameWeekDay = "";
-                            }
-                            this.tasks[j].date = nameWeekDay + " (" + this.tasks[j].date + ")";
-                        }
+                        this.tasks.push({ date: { dateNum: date,
+                                display: "" }, names: [{ name: tasksForWork[i].Task.title,
+                                    description: tasksForWork[i].Task.description,
+                                    id: tasksForWork[i].Task.id }] });
                     }
                 }
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+                this.tasks.forEach(function (item, i, arr) {
+                    var diffDate = today - item.date.dateNum;
+                    if (diffDate == 0) {
+                        item.date.display = "Today";
+                    }
+                    else if (diffDate == 86400000) {
+                        item.date.display = "Yesterday";
+                    }
+                    else if (diffDate == -86400000) {
+                        item.date.display = "Tomorrow";
+                    }
+                    else {
+                        var weekDay = item.date.dateNum.getDay();
+                        var dt, mn;
+                        (item.date.dateNum.getDate() < 9) ? dt = "0" + item.date.dateNum.getDate() : dt = item.date.dateNum.getDate();
+                        ((item.date.dateNum.getMonth() + 1) < 9) ? mn = "0" + item.date.dateNum.getMonth() + 1 : mn = item.date.dateNum.getMonth() + 1;
+                        if (dt < 9) { }
+                        var formatDate = dt + "." + mn + "." + item.date.dateNum.getFullYear();
+                        switch (weekDay) {
+                            case 0:
+                                item.date.display = "Sunday (" + formatDate + ")";
+                                break;
+                            case 1:
+                                item.date.display = "Monday (" + formatDate + ")";
+                                break;
+                            case 2:
+                                item.date.display = "Tuesday (" + formatDate + ")";
+                                break;
+                            case 3:
+                                item.date.display = "Wednesday (" + formatDate + ")";
+                                break;
+                            case 4:
+                                item.date.display = "Thursday (" + formatDate + ")";
+                                break;
+                            case 5:
+                                item.date.display = "Friday (" + formatDate + ")";
+                                break;
+                            case 6:
+                                item.date.display = "Saturday (" + formatDate + ")";
+                                break;
+                            default:
+                                item.date.display = "";
+                        }
+                    }
+                });
             };
             StartPageApp.prototype.openForAddProject = function () {
                 this.mdSidenav("rightPanel").open();
@@ -142,13 +155,6 @@ var ToDoApp;
             StartPageApp.prototype.openForEditProject = function () {
                 this.mdSidenav("rightPanel").open();
                 this.state.go("StartPage.Project", { projectId: this.currentProjectId });
-            };
-            StartPageApp.prototype.delProject = function () {
-                var _this = this;
-                this.deleteProject(this.currentProjectId, function () {
-                    _this.currentProjectId = 0;
-                    _this.getProj();
-                });
             };
             StartPageApp.prototype.openForAddTask = function () {
                 this.mdSidenav("rightPanel").open();
@@ -191,6 +197,27 @@ var ToDoApp;
                     var childTop_1 = parseInt(child.style.top);
                     child.style.top = (childTop_1 + 40) + "px";
                 }
+            };
+            StartPageApp.prototype.delProject = function (ev) {
+                var _this = this;
+                var confirm = this.mdDialog.confirm()
+                    .title('Would you like to delete this project?')
+                    .textContent('')
+                    .ariaLabel('Delete project')
+                    .targetEvent(ev)
+                    .ok('Delete')
+                    .cancel('Cancel');
+                this.mdDialog.show(confirm).then(function () {
+                    _this.deleteProject(_this.currentProjectId, function () {
+                        _this.currentProjectId = 0;
+                        _this.getProj();
+                    });
+                }, function () { });
+            };
+            StartPageApp.prototype.goToSearch = function () {
+                this.showSearch = false;
+                var inp = document.querySelector(".search-task");
+                inp.focus();
             };
             return StartPageApp;
         }(ToDoApp.Api.ApiWork));

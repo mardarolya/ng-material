@@ -1,6 +1,6 @@
 div.right-panel
 	div.head-panel
-		md-button.close.icons8-delete-2(ng-click="c.close()")
+		md-button.close.icons8-delete-2(ng-click="c.close()" aria-label="Exit")
 			span ESC
 		h2 {{c.panelHeader}} 
 		div.panel-actions(ng-show = "c.isShowTask")
@@ -18,6 +18,8 @@ div.right-panel
 			md-input-container.md-block(flex-gt-sm="")
 				label Description
 				input(ng-model="c.taskDescription")
+		div(layout-gt-sm="row" ng-show = "c.showError")
+			p.error Fill the Task name, please			
 
 	md-button.md-fab.check-task(aria-label="Check task" ng-click="c.saveTask()" ng-show="!c.isShowTask")
 		i.icons8-checkmark

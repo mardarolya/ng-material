@@ -14,11 +14,13 @@ module ToDoApp.Task {
 		public panelBody: string;
 		public taskName: string;
 		public taskDescription: string;
+		public showError: boolean;
 
 		private idTask: number;
 		private idProject: number;
+		private mdDialog: any;
 
-    	constructor($http, $state, $stateParams, $mdSidenav){
+    	constructor($http, $state, $stateParams, $mdSidenav, $mdDialog){
     		super($http);
 
     		this.mdSidenav = $mdSidenav;
@@ -26,6 +28,8 @@ module ToDoApp.Task {
     		this.isShowTask = $stateParams.state == "Show";
     		this.idTask = $stateParams.taskId;
     		this.idProject = $stateParams.projectId;
+    		this.showError = false;
+    		this.mdDialog = $mdDialog; 
 
     		if (this.idTask == 0) {
     			this.panelHeader = "Create new task";    			
@@ -45,20 +49,13 @@ module ToDoApp.Task {
     		this.panelHeader = "Edit task";
     	}  	
 
-    	public dlTask() {
-    		this.deleteTask(this.idTask, () => {
-    			localStorage.setItem("reloadProject", "true");
-    			this.close();
-    		});
-    	}
-
     	public close() {
     		this.mdSidenav('rightPanel').close()
     	}
 
     	public saveTask(){
-    		if (this.taskName && this.taskName != ""
-    			&& this.taskDescription && this.taskDescription != "") {
+    		if (this.taskName && this.taskName != "") {
+    			this.showError = false;
     			if (this.idTask == 0) {
 	    			this.addTask({session: "", Project: {id: this.idProject}, Task: {title: this.taskName, description: this.taskDescription}}, () => {
 	    				localStorage.setItem("reloadProject", "true");
@@ -68,10 +65,31 @@ module ToDoApp.Task {
 	    			this.editTask({session: "",  Project: {id: this.idProject}, Task: {id: this.idTask, title: this.taskName, description: this.taskDescription}}, () => {
 	    				localStorage.setItem("reloadProject", "true");
 	    				this.close();
+	    				this.isShowTask = true;;
+    					this.panelHeader = this.taskName;
 	    			});
 	    		}	
+    		} else {
+    			this.showError = true;
     		}    		
     	}
+
+    	public dlTask(ev) {
+          var confirm = this.mdDialog.confirm()
+          .title('Would you like to delete this task?')
+          .textContent('')
+          .ariaLabel('Delete task')
+          .targetEvent(ev)
+          .ok('Delete')
+          .cancel('Cancel');
+
+          this.mdDialog.show(confirm).then(() => {
+            this.deleteTask(this.idTask, () => {
+    			localStorage.setItem("reloadProject", "true");
+    			this.close();
+    		});
+          }, () => {});
+        }
     }
 
     task.controller("task", Task);

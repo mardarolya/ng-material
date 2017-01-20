@@ -152,7 +152,29 @@ body {
 		text-overflow: ellipsis;
 
 		&.nav {
-			min-width: 40px;
+			position: relative;
+			min-width: 30px;
+			margin: 2px;
+			
+			.up, .down {
+				position: absolute;
+				display: block;
+				width: 0;
+				height: 0;
+				border: 10px solid transparent;
+				top: 50%;
+				left:  50%;
+			}
+
+			.up {
+				border-bottom-color: #6b6b99;
+    			transform: translate(-50%, -75%);
+			}
+
+			.down {
+				border-top-color: #6b6b99;
+				transform: translate(-50%, -25%);
+			}
 		}
 	}
 
@@ -446,6 +468,10 @@ md-radio-button {
 		&.md-input-focused:not(.md-input-invalid) .md-input {
 			border-color: #f6f6f6;
 		}
+	}
+
+	.error {
+		color: red;
 	}
 }
 

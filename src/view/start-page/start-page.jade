@@ -24,26 +24,26 @@ div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 
 		
 		md-list-item.log-out
-			md-button.to-left
+			md-button(aria-label="Left").to-left
 				span.no-transform Log Out
-			md-button(ng-show="c.showNav" ng-click="c.upList()").to-left.nav
-				span.no-transform UP
-			md-button(ng-show="c.showNav" ng-click="c.downList()").to-left.nav
-				span.no-transform DOWN		
+			md-button(aria-label="Nav" ng-show="c.showNav" ng-click="c.upList()").to-left.nav
+				span.no-transform.up 
+			md-button(aria-label="Nav" ng-show="c.showNav" ng-click="c.downList()").to-left.nav
+				span.no-transform.down 	
 
 	md-content(flex) 
 		md-input-container.md-block.search(md-no-float="")
-			input(aria-label="Search task")
-		md-button.button-search(aria-label="Search")
+			input.search-task(aria-label="Search task" ng-model="c.searchTask")
+		md-button.button-search(aria-label="Search" ng-show="c.searchTask == '' && c.showSearch" ng-click="c.goToSearch()")
 			i.icons8-search
 
 		md-menu.button-more(md-position-mode="target-right target")
 			md-button.icons8-more(aria-label="Work with Project" ng-click="$mdOpenMenu($event)")
 			md-menu-content(width="4")
 				md-menu-item
-					md-button(ng-click="c.openForEditProject()") Edit project
+					md-button(aria-label="Edit project" ng-click="c.openForEditProject()") Edit project
 				md-menu-item
-					md-button(ng-click="c.delProject()") Delete project
+					md-button(aria-label="Delete project" ng-click="c.delProject()") Delete project
 
 		div.complete(layout="column" ng-show="c.tasks.length == 0")
 			span
@@ -52,12 +52,12 @@ div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 				span Have a good day
 
 		div.task-conteiner(layout="column")
-			div.task(ng-repeat = "task in c.tasks" class="task")
-				span.task-date {{task.date}}
+			div.task(ng-repeat = "task in c.tasks | orderBy: task.date.dateNum" class="task")
+				span.task-date {{task.date.display}}
 				md-card
-					md-card-content(ng-repeat = "name in task.names")
+					md-card-content(ng-repeat = "name in task.names | filter: c.searchTask")
 						md-radio-group
-							md-radio-button.md-primary(value="false" ng-click="c.taskDone(name.id)")
+							md-radio-button.md-primary(value="false" ng-click="c.taskDone(name.id)" aria-label="Task")
 						div.task-name(ng-click="c.openForShowTask(name.id)") 
 							span {{name.name}}
 

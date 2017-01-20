@@ -12,7 +12,6 @@ var ToDoApp;
             }
             ApiWork.prototype.isSessionAlive = function () {
                 var _this = this;
-                console.log("start");
                 if (this.session && this.session != "") {
                     this.http.get(this.way + '/session?session=' + this.session)
                         .then(function (data) { }, function (error) {
