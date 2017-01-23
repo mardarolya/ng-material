@@ -13,13 +13,14 @@ div.right-panel
 		div(layout-gt-sm="row")
 			md-input-container.md-block(flex-gt-sm="")
 				label Task name
-				input(ng-model="c.taskName")
+				input(ng-model="c.taskName" required="")
+				div(ng-messages="c.taskName.$error")
+					div(ng-message="required") Fill the correct Task name	
 		div(layout-gt-sm="row")
 			md-input-container.md-block(flex-gt-sm="")
 				label Description
 				input(ng-model="c.taskDescription")
-		div(layout-gt-sm="row" ng-show = "c.showError")
-			p.error Fill the Task name, please			
+					
 
 	md-button.md-fab.check-task(aria-label="Check task" ng-click="c.saveTask()" ng-show="!c.isShowTask")
 		i.icons8-checkmark

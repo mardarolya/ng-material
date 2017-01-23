@@ -16,20 +16,15 @@ div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 					span.icons8-plus
 
 			div.conteiner-projects
-				div.flow-conteiner(style="top: 0")
-					div.item-project(ng-repeat="project in c.projects")
-						md-button.full-width.list-item(id="id_{{project.Project.id}}" aria-label="Project" ng-click="c.getTasks(project.Project.id)")
-							span.to-left  {{project.Project.title}}
-							span.to-right {{project.Project.task_count}}
+				div.item-project(ng-repeat="project in c.projects")
+					md-button.full-width.list-item(id="id_{{project.Project.id}}" aria-label="Project" ng-click="c.getTasks(project.Project.id)")
+						span.to-left  {{project.Project.title}}
+						span.to-right {{project.Project.task_count}}
 
 		
 		md-list-item.log-out
 			md-button(aria-label="Left").to-left
 				span.no-transform Log Out
-			md-button(aria-label="Nav" ng-show="c.showNav" ng-click="c.upList()").to-left.nav
-				span.no-transform.up 
-			md-button(aria-label="Nav" ng-show="c.showNav" ng-click="c.downList()").to-left.nav
-				span.no-transform.down 	
 
 	md-content(flex) 
 		md-input-container.md-block.search(md-no-float="")

@@ -14,7 +14,6 @@ module ToDoApp.Task {
 		public panelBody: string;
 		public taskName: string;
 		public taskDescription: string;
-		public showError: boolean;
 
 		private idTask: number;
 		private idProject: number;
@@ -28,7 +27,6 @@ module ToDoApp.Task {
     		this.isShowTask = $stateParams.state == "Show";
     		this.idTask = $stateParams.taskId;
     		this.idProject = $stateParams.projectId;
-    		this.showError = false;
     		this.mdDialog = $mdDialog; 
 
     		if (this.idTask == 0) {
@@ -55,7 +53,6 @@ module ToDoApp.Task {
 
     	public saveTask(){
     		if (this.taskName && this.taskName != "" && this.taskName.charCodeAt() != 127) {
-    			this.showError = false;
     			if (this.idTask == 0) {
 	    			this.addTask({session: "", Project: {id: this.idProject}, Task: {title: this.taskName, description: this.taskDescription}}, () => {
 	    				localStorage.setItem("reloadProject", "true");
@@ -65,13 +62,9 @@ module ToDoApp.Task {
 	    			this.editTask({session: "",  Project: {id: this.idProject}, Task: {id: this.idTask, title: this.taskName, description: this.taskDescription}}, () => {
 	    				localStorage.setItem("reloadProject", "true");
 	    				this.close();
-	    				this.isShowTask = true;;
-    					this.panelHeader = this.taskName;
 	    			});
 	    		}	
-    		} else {
-    			this.showError = true;
-    		}    		
+    		}  		
     	}
 
     	public dlTask(ev) {

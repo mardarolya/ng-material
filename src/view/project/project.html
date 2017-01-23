@@ -9,6 +9,9 @@
       <md-input-container flex-gt-sm="" class="md-block">
         <label>ProjectName</label>
         <input ng-model="c.nameProject" required=""/>
+        <div ng-messages="c.nameProject.$error">
+          <div ng-message="required">Fill the correct Project name</div>
+        </div>
       </md-input-container>
     </div>
   </div>

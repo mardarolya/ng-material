@@ -14,7 +14,6 @@ module ToDoApp.StartPage {
         public tasks: any;
         public loaded: boolean;
         public mdSidenav: any;
-        public showNav: boolean;
         public searchTask: string;
         public showSearch: boolean;
         private state: any;
@@ -29,7 +28,6 @@ module ToDoApp.StartPage {
            this.currentProjectId = 0;
            this.loaded = false;
            this.state = $state;
-           this.showNav = false;
            this.mdDialog = $mdDialog;
            this.searchTask = "";
            this.showSearch = true;
@@ -66,7 +64,6 @@ module ToDoApp.StartPage {
                     }
                     this.loaded = true;
                     this.showSearch = true;
-                    this.isShowNav();
                     this.getTasks(this.currentProjectId);
                });
         }
@@ -79,7 +76,6 @@ module ToDoApp.StartPage {
                 if (!document.querySelector(".item-project .active")) {
                     this.setActive();
                 }
-                this.isShowNav();
                 this.taskList(data);
             });
         }
@@ -137,8 +133,8 @@ module ToDoApp.StartPage {
                } else {
                  var weekDay = item.date.dateNum.getDay();
                  var dt, mn;
-                 (item.date.dateNum.getDate() < 9)? dt = "0"+item.date.dateNum.getDate() : dt = item.date.dateNum.getDate();
-                 ((item.date.dateNum.getMonth() + 1) < 9)? mn = "0"+item.date.dateNum.getMonth() +1 : mn = item.date.dateNum.getMonth() +1;
+                 (item.date.dateNum.getDate() <= 9)? dt = "0"+item.date.dateNum.getDate() : dt = item.date.dateNum.getDate();
+                 ((item.date.dateNum.getMonth() + 1) <= 9)? mn = "0"+(item.date.dateNum.getMonth() + 1) : mn = item.date.dateNum.getMonth() +1;
                  if (dt < 9) {}
                  var formatDate = dt + "." + mn + "." + item.date.dateNum.getFullYear();
                  switch(weekDay) {
@@ -172,22 +168,22 @@ module ToDoApp.StartPage {
         
         public openForAddProject(){
             this.mdSidenav("rightPanel").open();
-            this.state.go("StartPage.Project", { projectId: 0 });
+            this.state.go("StartPage.Project", { projectId: 0 }, {reload : "StartPage.Project"});
         }
 
         public openForEditProject(){
             this.mdSidenav("rightPanel").open();
-            this.state.go("StartPage.Project", { projectId: this.currentProjectId });
+            this.state.go("StartPage.Project", { projectId: this.currentProjectId }, {reload : "StartPage.Project"});
         }
 
         public openForAddTask(){
             this.mdSidenav("rightPanel").open();
-            this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" });
+            this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" }, {reload : "StartPage.Task"});
         }
 
         public openForShowTask(idTask: number){
             this.mdSidenav("rightPanel").open();
-            this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" });
+            this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" }, {reload : "StartPage.Task"});
         }
 
         public taskDone(idTask: number){
@@ -198,36 +194,6 @@ module ToDoApp.StartPage {
 
         public close(){
              this.mdSidenav("rightPanel").close();
-        }
-
-        public isShowNav(){
-            let conteiner = document.querySelector(".conteiner-projects");
-            let flowConteiner = document.querySelector(".flow-conteiner");
-            this.showNav = conteiner.offsetHeight < flowConteiner.offsetHeight
-        }
-
-        public upList(){
-          let parent = document.querySelector(".conteiner-projects");
-          let child = document.querySelector(".flow-conteiner");
-          let parentBottom = (parent.getBoundingClientRect()).bottom;
-          let childBottom = (child.getBoundingClientRect()).bottom;
-          
-          if (childBottom > parentBottom) {
-            let childTop = parseInt(child.style.top);
-            child.style.top = (childTop - 40) + "px"; 
-          }
-        }
-
-        public downList(){
-          let parent = document.querySelector(".conteiner-projects");
-          let child = document.querySelector(".flow-conteiner");
-          let parentTop = (parent.getBoundingClientRect()).top;
-          let childTop = (child.getBoundingClientRect()).top;
-          
-          if (childTop < parentTop) {
-            let childTop = parseInt(child.style.top);
-            child.style.top = (childTop + 40) + "px"; 
-          }
         }
 
         public delProject(ev) {

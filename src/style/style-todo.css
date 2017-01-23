@@ -85,13 +85,7 @@ body {
 .conteiner .conteiner-projects {
   position: relative;
   height: 72%;
-  overflow: hidden;
-}
-.conteiner .conteiner-projects .flow-conteiner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  overflow-y: auto;
 }
 .conteiner .item-project {
   padding: 0;
@@ -126,29 +120,6 @@ body {
   max-width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.conteiner .to-left.nav {
-  position: relative;
-  min-width: 30px;
-  margin: 2px;
-}
-.conteiner .to-left.nav .up,
-.conteiner .to-left.nav .down {
-  position: absolute;
-  display: block;
-  width: 0;
-  height: 0;
-  border: 10px solid transparent;
-  top: 50%;
-  left: 50%;
-}
-.conteiner .to-left.nav .up {
-  border-bottom-color: #6b6b99;
-  transform: translate(-50%, -75%);
-}
-.conteiner .to-left.nav .down {
-  border-top-color: #6b6b99;
-  transform: translate(-50%, -25%);
 }
 .conteiner .to-right {
   float: right;
@@ -297,14 +268,18 @@ md-radio-button .md-ink-ripple .md-on {
 md-radio-button .md-ink-ripple .md-off {
   border-color: #bdbdbd;
 }
-.md-fab.add-task,
-.md-fab.check-task {
+.md-button.md-fab.add-task,
+.md-button.md-fab.check-task {
   position: fixed;
   z-index: 2;
   bottom: 30px;
   right: 30px;
   background-color: #6b6b99;
   font-size: 30px;
+}
+.md-button.md-fab.add-task:not([disabled]).md-focused,
+.md-button.md-fab.check-task:not([disabled]).md-focused {
+  background-color: #6b6b99;
 }
 .md-fab.check-task {
   z-index: 72;
@@ -372,6 +347,7 @@ md-radio-button .md-ink-ripple .md-off {
 }
 .new-task md-input-container {
   margin: 0;
+  margin-bottom: 12px;
 }
 .new-task md-input-container label {
   font-family: "SFUITextRegular", "Arial", sans-serif;

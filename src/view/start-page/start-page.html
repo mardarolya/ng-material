@@ -8,17 +8,13 @@
         <md-button aria-label="New project" ng-click="c.openForAddProject()" class="add-project"><span class="icons8-plus"></span></md-button>
       </div>
       <div class="conteiner-projects">
-        <div style="top: 0" class="flow-conteiner">
-          <div ng-repeat="project in c.projects" class="item-project">
-            <md-button id="id_{{project.Project.id}}" aria-label="Project" ng-click="c.getTasks(project.Project.id)" class="full-width list-item"><span class="to-left"> {{project.Project.title}}</span><span class="to-right">{{project.Project.task_count}}</span></md-button>
-          </div>
+        <div ng-repeat="project in c.projects" class="item-project">
+          <md-button id="id_{{project.Project.id}}" aria-label="Project" ng-click="c.getTasks(project.Project.id)" class="full-width list-item"><span class="to-left"> {{project.Project.title}}</span><span class="to-right">{{project.Project.task_count}}</span></md-button>
         </div>
       </div>
     </div>
     <md-list-item class="log-out">
       <md-button aria-label="Left" class="to-left"><span class="no-transform">Log Out</span></md-button>
-      <md-button aria-label="Nav" ng-show="c.showNav" ng-click="c.upList()" class="to-left nav"><span class="no-transform up"> </span></md-button>
-      <md-button aria-label="Nav" ng-show="c.showNav" ng-click="c.downList()" class="to-left nav"><span class="no-transform down">	</span></md-button>
     </md-list-item>
   </md-sidenav>
   <md-content flex="flex"> 

@@ -13,7 +13,10 @@
     <div layout-gt-sm="row">
       <md-input-container flex-gt-sm="" class="md-block">
         <label>Task name</label>
-        <input ng-model="c.taskName"/>
+        <input ng-model="c.taskName" required=""/>
+        <div ng-messages="c.taskName.$error">
+          <div ng-message="required">Fill the correct Task name	</div>
+        </div>
       </md-input-container>
     </div>
     <div layout-gt-sm="row">
@@ -21,9 +24,6 @@
         <label>Description</label>
         <input ng-model="c.taskDescription"/>
       </md-input-container>
-    </div>
-    <div layout-gt-sm="row" ng-show="c.showError">
-      <p class="error">Fill the Task name, please			</p>
     </div>
   </div>
   <md-button aria-label="Check task" ng-click="c.saveTask()" ng-show="!c.isShowTask" class="md-fab check-task"><i class="icons8-checkmark"></i></md-button>

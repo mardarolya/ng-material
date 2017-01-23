@@ -9,6 +9,8 @@ div.right-panel
 			md-input-container.md-block(flex-gt-sm="")
 				label ProjectName
 				input(ng-model="c.nameProject" required="")
+				div(ng-messages="c.nameProject.$error")
+					div(ng-message="required") Fill the correct Project name
 
 	md-button.md-fab.check-task(aria-label="Check task" ng-click="c.saveProject()")
 		i.icons8-checkmark

@@ -20,7 +20,6 @@ var ToDoApp;
                 _this.currentProjectId = 0;
                 _this.loaded = false;
                 _this.state = $state;
-                _this.showNav = false;
                 _this.mdDialog = $mdDialog;
                 _this.searchTask = "";
                 _this.showSearch = true;
@@ -52,7 +51,6 @@ var ToDoApp;
                     }
                     _this.loaded = true;
                     _this.showSearch = true;
-                    _this.isShowNav();
                     _this.getTasks(_this.currentProjectId);
                 });
             };
@@ -65,7 +63,6 @@ var ToDoApp;
                     if (!document.querySelector(".item-project .active")) {
                         _this.setActive();
                     }
-                    _this.isShowNav();
                     _this.taskList(data);
                 });
             };
@@ -119,8 +116,8 @@ var ToDoApp;
                     else {
                         var weekDay = item.date.dateNum.getDay();
                         var dt, mn;
-                        (item.date.dateNum.getDate() < 9) ? dt = "0" + item.date.dateNum.getDate() : dt = item.date.dateNum.getDate();
-                        ((item.date.dateNum.getMonth() + 1) < 9) ? mn = "0" + item.date.dateNum.getMonth() + 1 : mn = item.date.dateNum.getMonth() + 1;
+                        (item.date.dateNum.getDate() <= 9) ? dt = "0" + item.date.dateNum.getDate() : dt = item.date.dateNum.getDate();
+                        ((item.date.dateNum.getMonth() + 1) <= 9) ? mn = "0" + (item.date.dateNum.getMonth() + 1) : mn = item.date.dateNum.getMonth() + 1;
                         if (dt < 9) { }
                         var formatDate = dt + "." + mn + "." + item.date.dateNum.getFullYear();
                         switch (weekDay) {
@@ -153,19 +150,19 @@ var ToDoApp;
             };
             StartPageApp.prototype.openForAddProject = function () {
                 this.mdSidenav("rightPanel").open();
-                this.state.go("StartPage.Project", { projectId: 0 });
+                this.state.go("StartPage.Project", { projectId: 0 }, { reload: "StartPage.Project" });
             };
             StartPageApp.prototype.openForEditProject = function () {
                 this.mdSidenav("rightPanel").open();
-                this.state.go("StartPage.Project", { projectId: this.currentProjectId });
+                this.state.go("StartPage.Project", { projectId: this.currentProjectId }, { reload: "StartPage.Project" });
             };
             StartPageApp.prototype.openForAddTask = function () {
                 this.mdSidenav("rightPanel").open();
-                this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" });
+                this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" }, { reload: "StartPage.Task" });
             };
             StartPageApp.prototype.openForShowTask = function (idTask) {
                 this.mdSidenav("rightPanel").open();
-                this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" });
+                this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" }, { reload: "StartPage.Task" });
             };
             StartPageApp.prototype.taskDone = function (idTask) {
                 var _this = this;
@@ -175,31 +172,6 @@ var ToDoApp;
             };
             StartPageApp.prototype.close = function () {
                 this.mdSidenav("rightPanel").close();
-            };
-            StartPageApp.prototype.isShowNav = function () {
-                var conteiner = document.querySelector(".conteiner-projects");
-                var flowConteiner = document.querySelector(".flow-conteiner");
-                this.showNav = conteiner.offsetHeight < flowConteiner.offsetHeight;
-            };
-            StartPageApp.prototype.upList = function () {
-                var parent = document.querySelector(".conteiner-projects");
-                var child = document.querySelector(".flow-conteiner");
-                var parentBottom = (parent.getBoundingClientRect()).bottom;
-                var childBottom = (child.getBoundingClientRect()).bottom;
-                if (childBottom > parentBottom) {
-                    var childTop = parseInt(child.style.top);
-                    child.style.top = (childTop - 40) + "px";
-                }
-            };
-            StartPageApp.prototype.downList = function () {
-                var parent = document.querySelector(".conteiner-projects");
-                var child = document.querySelector(".flow-conteiner");
-                var parentTop = (parent.getBoundingClientRect()).top;
-                var childTop = (child.getBoundingClientRect()).top;
-                if (childTop < parentTop) {
-                    var childTop_1 = parseInt(child.style.top);
-                    child.style.top = (childTop_1 + 40) + "px";
-                }
             };
             StartPageApp.prototype.delProject = function (ev) {
                 var _this = this;
