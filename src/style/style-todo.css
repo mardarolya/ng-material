@@ -13,6 +13,11 @@
 body {
   font-family: "SFUIText", "Arial", sans-serif;
 }
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
 .conteiner {
   position: relative;
   width: 100%;
@@ -143,10 +148,11 @@ body {
 .conteiner md-content .search {
   margin-bottom: -10px;
 }
-.conteiner .button-search,
-.conteiner .button-more {
-  position: absolute;
-  top: 0;
+.conteiner .header {
+  position: relative;
+}
+.conteiner .header .button-search,
+.conteiner .header .button-more {
   min-width: 60px;
   height: 50px;
   background: transparent;
@@ -156,13 +162,13 @@ body {
   margin: 0;
   padding: 0;
 }
-.conteiner .button-search {
-  left: 0;
+.conteiner .header .button-search {
+  float: left;
 }
-.conteiner .button-more {
-  right: 0;
+.conteiner .header .button-more {
+  float: right;
 }
-.conteiner .button-more .md-button {
+.conteiner .header .button-more .md-button {
   height: 50px;
   min-width: 50px;
   width: 60px;
@@ -170,9 +176,31 @@ body {
   padding: 0;
   font-size: 30px;
 }
-.conteiner md-select.button-more .md-select-value {
+.conteiner .header md-select.button-more .md-select-value {
   position: relative;
   border-bottom-color: transparent;
+}
+.conteiner .header md-input-container.search {
+  position: relative;
+  margin: 21px 0 -27px 10px;
+  float: left;
+  width: 200px;
+  max-width: 60%;
+  padding-right: 20px;
+  height: 30px;
+  padding: 0;
+}
+.conteiner .header md-input-container.search .md-button.clean-search {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 20px;
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  padding: 0;
+  margin: 0;
 }
 .conteiner .display-none {
   display: none;
@@ -185,7 +213,7 @@ body {
 .conteiner .task-conteiner {
   margin: 0 auto;
   width: 100%;
-  max-height: 90%;
+  max-height: calc(100% - 51px);
   overflow-y: auto;
 }
 .conteiner .task-conteiner md-card {
@@ -223,6 +251,9 @@ body {
 }
 .conteiner .task-conteiner .task md-card {
   margin-top: 6px;
+}
+.conteiner .task-conteiner .task:first-child {
+  margin-top: 20px;
 }
 .conteiner .task-conteiner .task-date {
   color: #b3bbcb;

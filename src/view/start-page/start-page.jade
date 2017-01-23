@@ -27,18 +27,22 @@ div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 				span.no-transform Log Out
 
 	md-content(flex) 
-		md-input-container.md-block.search(md-no-float="")
-			input.search-task(aria-label="Search task" ng-model="c.searchTask")
-		md-button.button-search(aria-label="Search" ng-show="c.searchTask == '' && c.showSearch" ng-click="c.goToSearch()")
-			i.icons8-search
+		div.header.clearfix		
+			md-button.button-search(aria-label="Search" ng-click="c.goToSearch()")
+				i.icons8-search
+			
+			md-input-container.search(md-no-float="")
+				input.search-task(aria-label="Search task" ng-model="c.searchTask" placeholder="Write to search")
+				md-button.clean-search.icons8-delete-2(aria-label="Clean" ng-click="c.searchTask = ''" ng-show="c.searchTask != ''")
 
-		md-menu.button-more(md-position-mode="target-right target")
-			md-button.icons8-more(aria-label="Work with Project" ng-click="$mdOpenMenu($event)")
-			md-menu-content(width="4")
-				md-menu-item
-					md-button(aria-label="Edit project" ng-click="c.openForEditProject()") Edit project
-				md-menu-item
-					md-button(aria-label="Delete project" ng-click="c.delProject()") Delete project
+			md-menu.button-more(md-position-mode="target-right target")
+				md-button.icons8-more(aria-label="Work with Project" ng-click="$mdOpenMenu($event)")
+				md-menu-content(width="4")
+					md-menu-item
+						md-button(aria-label="Edit project" ng-click="c.openForEditProject()") Edit project
+					md-menu-item
+						md-button(aria-label="Delete project" ng-click="c.delProject()") Delete project
+		md-divider
 
 		div.complete(layout="column" ng-show="c.tasks.length == 0")
 			span

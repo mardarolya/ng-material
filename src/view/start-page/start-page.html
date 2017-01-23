@@ -18,21 +18,25 @@
     </md-list-item>
   </md-sidenav>
   <md-content flex="flex"> 
-    <md-input-container md-no-float="" class="md-block search">
-      <input aria-label="Search task" ng-model="c.searchTask" class="search-task"/>
-    </md-input-container>
-    <md-button aria-label="Search" ng-show="c.searchTask == '' &amp;&amp; c.showSearch" ng-click="c.goToSearch()" class="button-search"><i class="icons8-search"></i></md-button>
-    <md-menu md-position-mode="target-right target" class="button-more">
-      <md-button aria-label="Work with Project" ng-click="$mdOpenMenu($event)" class="icons8-more"></md-button>
-      <md-menu-content width="4">
-        <md-menu-item>
-          <md-button aria-label="Edit project" ng-click="c.openForEditProject()">Edit project</md-button>
-        </md-menu-item>
-        <md-menu-item>
-          <md-button aria-label="Delete project" ng-click="c.delProject()">Delete project</md-button>
-        </md-menu-item>
-      </md-menu-content>
-    </md-menu>
+    <div class="header clearfix">		
+      <md-button aria-label="Search" ng-click="c.goToSearch()" class="button-search"><i class="icons8-search"></i></md-button>
+      <md-input-container md-no-float="" class="search">
+        <input aria-label="Search task" ng-model="c.searchTask" placeholder="Write to search" class="search-task"/>
+        <md-button aria-label="Clean" ng-click="c.searchTask = ''" ng-show="c.searchTask != ''" class="clean-search icons8-delete-2"></md-button>
+      </md-input-container>
+      <md-menu md-position-mode="target-right target" class="button-more">
+        <md-button aria-label="Work with Project" ng-click="$mdOpenMenu($event)" class="icons8-more"></md-button>
+        <md-menu-content width="4">
+          <md-menu-item>
+            <md-button aria-label="Edit project" ng-click="c.openForEditProject()">Edit project</md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button aria-label="Delete project" ng-click="c.delProject()">Delete project</md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+    </div>
+    <md-divider></md-divider>
     <div layout="column" ng-show="c.tasks.length == 0" class="complete"><span><i class="icons8-todo-list"></i><br/><span>Have a good day</span></span></div>
     <div layout="column" class="task-conteiner">
       <div ng-repeat="task in c.tasks" class="task task"><span class="task-date">{{task.date.display}}</span>

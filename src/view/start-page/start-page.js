@@ -190,7 +190,6 @@ var ToDoApp;
                 }, function () { });
             };
             StartPageApp.prototype.goToSearch = function () {
-                this.showSearch = false;
                 var inp = document.querySelector(".search-task");
                 inp.focus();
             };

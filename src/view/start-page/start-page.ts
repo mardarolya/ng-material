@@ -214,7 +214,6 @@ module ToDoApp.StartPage {
         }
 
         public goToSearch() {
-          this.showSearch = false;
           let inp = document.querySelector(".search-task");
           inp.focus();
         }

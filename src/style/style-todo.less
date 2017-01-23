@@ -18,6 +18,12 @@ body {
 	font-family: "SFUIText", "Arial", sans-serif;
 }
 
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 .conteiner {
 	position: relative;
 	width: 100%;
@@ -174,42 +180,71 @@ body {
 		margin-bottom: -10px;
 	}
 
-	.button-search,
-	.button-more {
-		position: absolute;
-		top: 0;
-		min-width: 60px;
-		height: 50px;
-		background: transparent;
-		font-size: 30px;
-		line-height: 30px;
-		color: #b3bbcb;
-		margin: 0;
-		padding: 0;
-	}
+	.header {
+		position: relative;
+		// border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
-	.button-search {
-		left: 0;
-	}
-
-	.button-more {
-		right: 0;
-
-		.md-button {
+		.button-search,
+		.button-more {
+			min-width: 60px;
 			height: 50px;
-		    min-width: 50px;
-		    width: 60px;
-		    margin: 0;
-		    padding: 0;
-		    font-size: 30px;
+			background: transparent;
+			font-size: 30px;
+			line-height: 30px;
+			color: #b3bbcb;
+			margin: 0;
+			padding: 0;
+		}
+
+		.button-search {
+			float: left;
+		}
+
+		.button-more {
+			float: right;
+
+			.md-button {
+				height: 50px;
+			    min-width: 50px;
+			    width: 60px;
+			    margin: 0;
+			    padding: 0;
+			    font-size: 30px;
+			}
+		}
+
+		md-select.button-more .md-select-value {
+			position: relative;
+			border-bottom-color: transparent;
+			
+		}
+
+		md-input-container.search {
+			position: relative;
+			margin: 21px 0 -27px 10px;
+			float: left;
+			width: 200px;
+			max-width: 60%;
+			padding-right: 20px;
+			height: 30px;
+			padding: 0;
+
+			.md-button.clean-search {
+				position: absolute;
+				right: 0;
+				top: 50%;
+    			transform: translateY(-50%);
+				min-width: 20px;
+				width: 20px;
+			    height: 20px;
+    			min-height: 20px;
+    			padding: 0;
+    			margin: 0;
+			}
 		}
 	}
 
-	md-select.button-more .md-select-value {
-		position: relative;
-		border-bottom-color: transparent;
-		
-	}
+	
 
 	.display-none {
 		display: none;
@@ -224,7 +259,7 @@ body {
 	.task-conteiner {
 		margin: 0 auto;
 		width: 100%;
-		max-height: 90%;
+		max-height: calc(100% - 51px);
         overflow-y: auto;
 
 		md-card {
@@ -267,6 +302,10 @@ body {
 
 			md-card {
 				margin-top: 6px;
+			}
+
+			&:first-child {
+				margin-top: 20px;
 			}
 		}
 
