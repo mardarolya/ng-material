@@ -18,7 +18,6 @@ var ToDoApp;
                 _this.isShowTask = $stateParams.state == "Show";
                 _this.idTask = $stateParams.taskId;
                 _this.idProject = $stateParams.projectId;
-                _this.showError = false;
                 _this.mdDialog = $mdDialog;
                 if (_this.idTask == 0) {
                     _this.panelHeader = "Create new task";
@@ -43,7 +42,6 @@ var ToDoApp;
             Task.prototype.saveTask = function () {
                 var _this = this;
                 if (this.taskName && this.taskName != "" && this.taskName.charCodeAt() != 127) {
-                    this.showError = false;
                     if (this.idTask == 0) {
                         this.addTask({ session: "", Project: { id: this.idProject }, Task: { title: this.taskName, description: this.taskDescription } }, function () {
                             localStorage.setItem("reloadProject", "true");
@@ -54,14 +52,8 @@ var ToDoApp;
                         this.editTask({ session: "", Project: { id: this.idProject }, Task: { id: this.idTask, title: this.taskName, description: this.taskDescription } }, function () {
                             localStorage.setItem("reloadProject", "true");
                             _this.close();
-                            _this.isShowTask = true;
-                            ;
-                            _this.panelHeader = _this.taskName;
                         });
                     }
-                }
-                else {
-                    this.showError = true;
                 }
             };
             Task.prototype.dlTask = function (ev) {
