@@ -6,10 +6,12 @@ var gulp = require("gulp"),
 	tscr = require('gulp-typescript'),
 	cssmin = require('gulp-cssmin'),
 	jsmin  = require('gulp-jsmin'),
-	watch  = require('gulp-watch');
+	watch  = require('gulp-watch'),
+	livereload = require('gulp-livereload');
 
 // следим за изменениями
 gulp.task('whats-new', function(){
+	livereload.listen(); 
 	
 	watch(['./src/index.jade', './src/view/**/*.jade'])  
 		.on("change", function(file) {
@@ -18,7 +20,8 @@ gulp.task('whats-new', function(){
             .on('error', console.log)
             .pipe(gulp.dest(function(file){
                     return file.base;
-                }, {overwrite: true}));
+                }, {overwrite: true}))
+            .pipe(livereload());
         });
 
 	watch(['./src/script/*.ts', './src/view/**/*.ts'])
@@ -28,7 +31,8 @@ gulp.task('whats-new', function(){
 	            .on('error', console.log)
 	            .pipe(gulp.dest(function(file){
                     return file.base;
-                }, {overwrite: true}));
+                }, {overwrite: true}))
+                .pipe(livereload());
 	        });
 	
 	watch('./src/style/*.less')
@@ -38,9 +42,9 @@ gulp.task('whats-new', function(){
             .on('error', console.log)
             .pipe(gulp.dest(function(file){
                     return file.base;
-                }, {overwrite: true}));
+                }, {overwrite: true}))
+            .pipe(livereload());
         });
-
 });	
 
 

@@ -7,7 +7,7 @@ module ToDoApp.StartPage {
 
     var startPage = angular.module("ToDoApp.StartPage", ["ui.router"]);
 
-    class StartPageApp extends ToDoApp.Api.ApiWork {
+    class StartPage extends ToDoApp.Api.ApiWork {
         public currentUser: string;
         public projects: any;
         public currentProjectId: number;
@@ -20,7 +20,7 @@ module ToDoApp.StartPage {
         private mdDialog: any;
         
     	constructor($http, $mdSidenav, $state, $scope, $mdDialog){
-           super($http); 
+           super($http, $mdSidenav, $mdDialog); 
 
            this.mdSidenav = $mdSidenav;
            this.projects = [];
@@ -192,25 +192,13 @@ module ToDoApp.StartPage {
             });
         }
 
-        public close(){
-             this.mdSidenav("rightPanel").close();
-        }
-
         public delProject(ev) {
-          var confirm = this.mdDialog.confirm()
-          .title('Would you like to delete this project?')
-          .textContent('')
-          .ariaLabel('Delete project')
-          .targetEvent(ev)
-          .ok('Delete')
-          .cancel('Cancel');
-
-          this.mdDialog.show(confirm).then(() => {
+          this.showConfirm(ev, "Would you like to delete this project?", "Delete", () => {
             this.deleteProject(this.currentProjectId, () => {
                 this.currentProjectId = 0;
                 this.getProj();
             })
-          }, () => {});
+          })
         }
 
         public goToSearch() {
@@ -219,7 +207,7 @@ module ToDoApp.StartPage {
         }
     }
 
-    startPage.controller("startPageApp", StartPageApp)
+    startPage.controller("startPage", StartPage)
              .directive('ngEsc', function () {
                 return (scope, element, attrs) => {
                     element.bind("keydown keypress keyup", function (event) {

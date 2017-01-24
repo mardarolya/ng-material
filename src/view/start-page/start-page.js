@@ -7,13 +7,13 @@ var __extends = (this && this.__extends) || function (d, b) {
 var ToDoApp;
 (function (ToDoApp) {
     var StartPage;
-    (function (StartPage) {
+    (function (StartPage_1) {
         'use strict';
         var startPage = angular.module("ToDoApp.StartPage", ["ui.router"]);
-        var StartPageApp = (function (_super) {
-            __extends(StartPageApp, _super);
-            function StartPageApp($http, $mdSidenav, $state, $scope, $mdDialog) {
-                var _this = _super.call(this, $http) || this;
+        var StartPage = (function (_super) {
+            __extends(StartPage, _super);
+            function StartPage($http, $mdSidenav, $state, $scope, $mdDialog) {
+                var _this = _super.call(this, $http, $mdSidenav, $mdDialog) || this;
                 _this.mdSidenav = $mdSidenav;
                 _this.projects = [];
                 _this.tasks = [];
@@ -42,7 +42,7 @@ var ToDoApp;
                 });
                 return _this;
             }
-            StartPageApp.prototype.getProj = function () {
+            StartPage.prototype.getProj = function () {
                 var _this = this;
                 this.getProgects(function (data) {
                     _this.projects = data.projects;
@@ -54,7 +54,7 @@ var ToDoApp;
                     _this.getTasks(_this.currentProjectId);
                 });
             };
-            StartPageApp.prototype.getTasks = function (projectID) {
+            StartPage.prototype.getTasks = function (projectID) {
                 var _this = this;
                 this.currentProjectId = projectID;
                 this.setActive();
@@ -66,7 +66,7 @@ var ToDoApp;
                     _this.taskList(data);
                 });
             };
-            StartPageApp.prototype.setActive = function () {
+            StartPage.prototype.setActive = function () {
                 var oldEl = document.querySelector(".item-project .active");
                 if (oldEl) {
                     oldEl.classList.remove("active");
@@ -76,7 +76,7 @@ var ToDoApp;
                     newEl.classList.add("active");
                 }
             };
-            StartPageApp.prototype.taskList = function (data) {
+            StartPage.prototype.taskList = function (data) {
                 var tasksForWork = data.tasks;
                 var dtParts = [];
                 this.tasks = [];
@@ -148,54 +148,44 @@ var ToDoApp;
                     }
                 });
             };
-            StartPageApp.prototype.openForAddProject = function () {
+            StartPage.prototype.openForAddProject = function () {
                 this.mdSidenav("rightPanel").open();
                 this.state.go("StartPage.Project", { projectId: 0 }, { reload: "StartPage.Project" });
             };
-            StartPageApp.prototype.openForEditProject = function () {
+            StartPage.prototype.openForEditProject = function () {
                 this.mdSidenav("rightPanel").open();
                 this.state.go("StartPage.Project", { projectId: this.currentProjectId }, { reload: "StartPage.Project" });
             };
-            StartPageApp.prototype.openForAddTask = function () {
+            StartPage.prototype.openForAddTask = function () {
                 this.mdSidenav("rightPanel").open();
                 this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" }, { reload: "StartPage.Task" });
             };
-            StartPageApp.prototype.openForShowTask = function (idTask) {
+            StartPage.prototype.openForShowTask = function (idTask) {
                 this.mdSidenav("rightPanel").open();
                 this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" }, { reload: "StartPage.Task" });
             };
-            StartPageApp.prototype.taskDone = function (idTask) {
+            StartPage.prototype.taskDone = function (idTask) {
                 var _this = this;
                 this.doneTask({ session: "", Task: { id: idTask } }, function () {
                     _this.getProj();
                 });
             };
-            StartPageApp.prototype.close = function () {
-                this.mdSidenav("rightPanel").close();
-            };
-            StartPageApp.prototype.delProject = function (ev) {
+            StartPage.prototype.delProject = function (ev) {
                 var _this = this;
-                var confirm = this.mdDialog.confirm()
-                    .title('Would you like to delete this project?')
-                    .textContent('')
-                    .ariaLabel('Delete project')
-                    .targetEvent(ev)
-                    .ok('Delete')
-                    .cancel('Cancel');
-                this.mdDialog.show(confirm).then(function () {
+                this.showConfirm(ev, "Would you like to delete this project?", "Delete", function () {
                     _this.deleteProject(_this.currentProjectId, function () {
                         _this.currentProjectId = 0;
                         _this.getProj();
                     });
-                }, function () { });
+                });
             };
-            StartPageApp.prototype.goToSearch = function () {
+            StartPage.prototype.goToSearch = function () {
                 var inp = document.querySelector(".search-task");
                 inp.focus();
             };
-            return StartPageApp;
+            return StartPage;
         }(ToDoApp.Api.ApiWork));
-        startPage.controller("startPageApp", StartPageApp)
+        startPage.controller("startPage", StartPage)
             .directive('ngEsc', function () {
             return function (scope, element, attrs) {
                 element.bind("keydown keypress keyup", function (event) {

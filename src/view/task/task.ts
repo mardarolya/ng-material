@@ -20,7 +20,7 @@ module ToDoApp.Task {
 		private mdDialog: any;
 
     	constructor($http, $state, $stateParams, $mdSidenav, $mdDialog){
-    		super($http);
+    		super($http, $mdSidenav, $mdDialog);
 
     		this.mdSidenav = $mdSidenav;
 
@@ -47,10 +47,6 @@ module ToDoApp.Task {
     		this.panelHeader = "Edit task";
     	}  	
 
-    	public close() {
-    		this.mdSidenav('rightPanel').close()
-    	}
-
     	public saveTask(){
     		if (this.taskName && this.taskName != "" && this.taskName.charCodeAt() != 127) {
     			if (this.idTask == 0) {
@@ -68,21 +64,13 @@ module ToDoApp.Task {
     	}
 
     	public dlTask(ev) {
-          var confirm = this.mdDialog.confirm()
-          .title('Would you like to delete this task?')
-          .textContent('')
-          .ariaLabel('Delete task')
-          .targetEvent(ev)
-          .ok('Delete')
-          .cancel('Cancel');
-
-          this.mdDialog.show(confirm).then(() => {
-            this.deleteTask(this.idTask, () => {
-    			localStorage.setItem("reloadProject", "true");
-    			this.close();
-    		});
-          }, () => {});
-        }
+    		this.showConfirm(ev, "Would you like to delete this task?", "Delete", () => {
+	    			this.deleteTask(this.idTask, () => {
+	    			localStorage.setItem("reloadProject", "true");
+	    			this.close();
+    			})
+    		})
+    	}
     }
 
     task.controller("task", Task);

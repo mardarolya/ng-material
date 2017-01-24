@@ -1,4 +1,4 @@
-include style/mixins/mixins.jade
+include mixin/mixins.jade
 
 html(lang="en", ng-app="ToDoApp")
 	head
@@ -17,7 +17,7 @@ html(lang="en", ng-app="ToDoApp")
 		+source("angular-aria/angular-aria.min.js")
 		+source("angular-material/angular-material.min.js")
 		+source("angular-ui-router/angular-ui-router.min.js")
-		+script("main.js")
+		+script("main.route.js")
 		+script("api.js")
 		+script-full("view/start-page/start-page.js")
 		+script-full("view/project/project.js")

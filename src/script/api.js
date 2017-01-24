@@ -1,13 +1,43 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var ToDoApp;
 (function (ToDoApp) {
     var Api;
     (function (Api) {
         'use strict';
-        var ApiWork = (function () {
-            function ApiWork($http) {
-                this.http = $http;
-                this.way = "https://api-test-task.decodeapps.io";
-                this.session = this.getCookie("mySession");
+        var generalFunc = (function () {
+            function generalFunc($mdSidenav, $mdDialog) {
+                this.mdSidenav = $mdSidenav;
+                this.mdDialog = $mdDialog;
+            }
+            generalFunc.prototype.showConfirm = function (event, title, okButtonTitle, success) {
+                var confirm = this.mdDialog.confirm()
+                    .title(title)
+                    .textContent('')
+                    .ariaLabel(okButtonTitle)
+                    .targetEvent(event)
+                    .ok(okButtonTitle)
+                    .cancel('Cancel');
+                this.mdDialog.show(confirm).then(function () {
+                    success();
+                }, function () { });
+            };
+            generalFunc.prototype.close = function () {
+                this.mdSidenav("rightPanel").close();
+            };
+            return generalFunc;
+        }());
+        var ApiWork = (function (_super) {
+            __extends(ApiWork, _super);
+            function ApiWork($http, $mdSidenav, $mdDialog) {
+                var _this = _super.call(this, $mdSidenav, $mdDialog) || this;
+                _this.http = $http;
+                _this.way = "https://api-test-task.decodeapps.io";
+                _this.session = _this.getCookie("mySession");
+                return _this;
             }
             ApiWork.prototype.isSessionAlive = function (success) {
                 var _this = this;
@@ -168,7 +198,7 @@ var ToDoApp;
                 });
             };
             return ApiWork;
-        }());
+        }(generalFunc));
         Api.ApiWork = ApiWork;
     })(Api = ToDoApp.Api || (ToDoApp.Api = {}));
 })(ToDoApp || (ToDoApp = {}));

@@ -13,7 +13,7 @@ var ToDoApp;
         var Task = (function (_super) {
             __extends(Task, _super);
             function Task($http, $state, $stateParams, $mdSidenav, $mdDialog) {
-                var _this = _super.call(this, $http) || this;
+                var _this = _super.call(this, $http, $mdSidenav, $mdDialog) || this;
                 _this.mdSidenav = $mdSidenav;
                 _this.isShowTask = $stateParams.state == "Show";
                 _this.idTask = $stateParams.taskId;
@@ -36,9 +36,6 @@ var ToDoApp;
                 this.isShowTask = false;
                 this.panelHeader = "Edit task";
             };
-            Task.prototype.close = function () {
-                this.mdSidenav('rightPanel').close();
-            };
             Task.prototype.saveTask = function () {
                 var _this = this;
                 if (this.taskName && this.taskName != "" && this.taskName.charCodeAt() != 127) {
@@ -58,19 +55,12 @@ var ToDoApp;
             };
             Task.prototype.dlTask = function (ev) {
                 var _this = this;
-                var confirm = this.mdDialog.confirm()
-                    .title('Would you like to delete this task?')
-                    .textContent('')
-                    .ariaLabel('Delete task')
-                    .targetEvent(ev)
-                    .ok('Delete')
-                    .cancel('Cancel');
-                this.mdDialog.show(confirm).then(function () {
+                this.showConfirm(ev, "Would you like to delete this task?", "Delete", function () {
                     _this.deleteTask(_this.idTask, function () {
                         localStorage.setItem("reloadProject", "true");
                         _this.close();
                     });
-                }, function () { });
+                });
             };
             return Task;
         }(ToDoApp.Api.ApiWork));

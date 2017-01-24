@@ -49,12 +49,44 @@ module ToDoApp.Api {
         }
     }
 
-    export class ApiWork {
+    class generalFunc {
+        private mdSidenav: any;
+        private mdDialog: any;
+
+        constructor($mdSidenav, $mdDialog){
+            this.mdSidenav = $mdSidenav;
+            this.mdDialog = $mdDialog;
+        }
+
+        public showConfirm(event, title, okButtonTitle, success: (() => void)) {
+            var confirm = this.mdDialog.confirm()
+                .title(title)
+                .textContent('')
+                .ariaLabel(okButtonTitle)
+                .targetEvent(event)
+                .ok(okButtonTitle)
+                .cancel('Cancel');
+
+                this.mdDialog.show(confirm).then(() => {
+                    success();
+                }, () => {});
+        }
+
+        public close() {
+           this.mdSidenav("rightPanel").close(); 
+        }
+
+    }
+
+    export class ApiWork extends generalFunc{
     	private way:     string;
     	private http:    any;
     	private session: string;
 
-    	constructor($http){
+    	constructor($http, $mdSidenav, $mdDialog){
+
+            super($mdSidenav, $mdDialog);
+
     		this.http = $http;
     		this.way = "https://api-test-task.decodeapps.io";
     		this.session = this.getCookie("mySession");

@@ -1,7 +1,6 @@
 var ToDoApp;
 (function (ToDoApp) {
     'use strict';
-    // var toDo = angular.module("ToDoApp", ["ngMaterial", "ui.router"]);
     var toDoApp = angular
         .module("ToDoApp", ["ngMaterial", "ui.router",
         "ToDoApp.StartPage",
@@ -12,7 +11,7 @@ var ToDoApp;
             .state('StartPage', {
             url: "/StartPage",
             templateUrl: "view/start-page/start-page.html",
-            controller: "startPageApp",
+            controller: "startPage",
             controllerAs: "c"
         })
             .state('StartPage.Project', {
