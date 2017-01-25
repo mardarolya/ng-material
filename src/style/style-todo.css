@@ -38,11 +38,10 @@ body {
 .conteiner .conteiner-sidebar {
   position: relative;
   margin: 20px 0 22px 0;
-  padding: 0 30px;
 }
 .conteiner .conteiner-sidebar md-list-item.user {
   margin-bottom: 38px;
-  padding-left: 10px;
+  padding: 0 40px;
 }
 .conteiner .with-frame {
   padding: 4px;
@@ -63,10 +62,8 @@ body {
 }
 .conteiner .full-width {
   position: relative;
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
   text-transform: none;
+  padding: 0 44px;
 }
 .conteiner .projects {
   font-size: 12px;
@@ -89,12 +86,13 @@ body {
 }
 .conteiner .conteiner-projects {
   position: relative;
-  height: 72%;
-  overflow-y: auto;
+  height: calc(100% - 205px);
+  padding: 0 30px;
+  overflow: hidden;
 }
 .conteiner .item-project {
-  padding: 0;
   margin: 0;
+  width: 100%;
 }
 .conteiner .complete {
   display: table;
@@ -115,6 +113,9 @@ body {
 .conteiner .list-item {
   font-size: 15px;
   line-height: 40px;
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
   margin: 0;
 }
 .conteiner .list-item.active {
@@ -248,6 +249,7 @@ body {
   margin-bottom: 6px;
   width: 60%;
   margin: 0 auto;
+  margin-top: 13px;
 }
 .conteiner .task-conteiner .task md-card {
   margin-top: 6px;
@@ -408,4 +410,13 @@ md-backdrop.md-sidenav-backdrop {
 }
 md-input-container:not(.md-input-invalid).md-input-has-value label {
   color: #f6f6f6;
+}
+.overview {
+  width: 100%;
+}
+.scroll-bar {
+  background-color: #6b6b99;
+}
+.scroll-bar .thumb {
+  background-color: white;
 }

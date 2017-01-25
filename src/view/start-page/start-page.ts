@@ -18,8 +18,9 @@ module ToDoApp.StartPage {
         public showSearch: boolean;
         private state: any;
         private mdDialog: any;
+        private timeout: any;
         
-    	constructor($http, $mdSidenav, $state, $scope, $mdDialog){
+    	constructor($http, $mdSidenav, $state, $scope, $mdDialog, $timeout){
            super($http, $mdSidenav, $mdDialog); 
 
            this.mdSidenav = $mdSidenav;
@@ -31,6 +32,7 @@ module ToDoApp.StartPage {
            this.mdDialog = $mdDialog;
            this.searchTask = "";
            this.showSearch = true;
+           this.timeout = $timeout;
 
            this.isSessionAlive(() => {
               this.getUserInfo((data: any) => {
@@ -53,7 +55,6 @@ module ToDoApp.StartPage {
                   }
                   
                 });
-
     	}
 
         public getProj(){
@@ -61,11 +62,18 @@ module ToDoApp.StartPage {
                     this.projects = data.projects;
                     if (this.currentProjectId == 0) {
                        this.currentProjectId = this.projects[0].Project.id;
-                    }
+                    };
                     this.loaded = true;
                     this.showSearch = true;
+                    setTimeout(()=>{
+                      let div = document.querySelector(".conteiner-projects");
+                      div.classList.add("default-skin");
+                      $(".conteiner-projects").customScrollbar();
+                    }, 1500);
                     this.getTasks(this.currentProjectId);
                });
+
+
         }
 
         public getTasks(projectID: number) {

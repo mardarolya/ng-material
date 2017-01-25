@@ -12,7 +12,7 @@ var ToDoApp;
         var startPage = angular.module("ToDoApp.StartPage", ["ui.router"]);
         var StartPage = (function (_super) {
             __extends(StartPage, _super);
-            function StartPage($http, $mdSidenav, $state, $scope, $mdDialog) {
+            function StartPage($http, $mdSidenav, $state, $scope, $mdDialog, $timeout) {
                 var _this = _super.call(this, $http, $mdSidenav, $mdDialog) || this;
                 _this.mdSidenav = $mdSidenav;
                 _this.projects = [];
@@ -23,6 +23,7 @@ var ToDoApp;
                 _this.mdDialog = $mdDialog;
                 _this.searchTask = "";
                 _this.showSearch = true;
+                _this.timeout = $timeout;
                 _this.isSessionAlive(function () {
                     _this.getUserInfo(function (data) {
                         _this.currentUser = data.Account.username;
@@ -49,8 +50,14 @@ var ToDoApp;
                     if (_this.currentProjectId == 0) {
                         _this.currentProjectId = _this.projects[0].Project.id;
                     }
+                    ;
                     _this.loaded = true;
                     _this.showSearch = true;
+                    setTimeout(function () {
+                        var div = document.querySelector(".conteiner-projects");
+                        div.classList.add("default-skin");
+                        $(".conteiner-projects").customScrollbar();
+                    }, 1500);
                     _this.getTasks(_this.currentProjectId);
                 });
             };
