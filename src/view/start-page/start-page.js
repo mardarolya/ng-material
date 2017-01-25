@@ -14,6 +14,7 @@ var ToDoApp;
             __extends(StartPage, _super);
             function StartPage($http, $mdSidenav, $state, $scope, $mdDialog, $timeout) {
                 var _this = _super.call(this, $http, $mdSidenav, $mdDialog) || this;
+                _this.offset = 0;
                 _this.mdSidenav = $mdSidenav;
                 _this.projects = [];
                 _this.tasks = [];
@@ -66,12 +67,48 @@ var ToDoApp;
                 this.currentProjectId = projectID;
                 this.setActive();
                 this.showSearch = true;
-                this.getProjectTasks(this.currentProjectId, 0, function (data) {
+                var taskCount;
+                for (var i = 0, max = this.projects.length; i < max; i++) {
+                    if (this.projects[i].Project.id == this.currentProjectId) {
+                        taskCount = this.projects[i].Project.task_count;
+                        break;
+                    }
+                }
+                if (taskCount > 20) {
+                    this.offset = taskCount - 20;
+                }
+                this.getProjectTasks(this.currentProjectId, this.offset, function (data) {
                     if (!document.querySelector(".item-project .active")) {
                         _this.setActive();
                     }
+                    _this.tasks = [];
                     _this.taskList(data);
                 });
+            };
+            StartPage.prototype.paginator = function () {
+                var timerId = setTimeout(function tick() {
+                    var _this = this;
+                    var lastBlock = document.querySelector(".task-conteiner .task:last-child md-card-content:last-child");
+                    var coord = lastBlock.getBoundingClientRect();
+                    var documentHeight = document.documentElement.clientHeight;
+                    var r = documentHeight - coord.top;
+                    if (r > 0 && r < 450) {
+                        // загрузить партию
+                        this.offset -= 20;
+                        this.getProjectTasks(this.currentProjectId, this.offset, function (data) {
+                            _this.taskList(data);
+                            if (_this.offset < 0) {
+                                clearTimeout(timerId);
+                            }
+                            else {
+                                timerId = setTimeout(tick, 1000);
+                            }
+                        });
+                    }
+                    else {
+                        timerId = setTimeout(tick, 1000);
+                    }
+                }, 1000);
             };
             StartPage.prototype.setActive = function () {
                 var oldEl = document.querySelector(".item-project .active");
@@ -86,7 +123,6 @@ var ToDoApp;
             StartPage.prototype.taskList = function (data) {
                 var tasksForWork = data.tasks;
                 var dtParts = [];
-                this.tasks = [];
                 for (var i = tasksForWork.length - 1, min = 0; i >= min; i--) {
                     dtParts = ((tasksForWork[i].Task.created_at).split(" ")[0]).split("-");
                     var date = new Date(parseInt(dtParts[0]), parseInt(dtParts[1]) - 1, parseInt(dtParts[2]));

@@ -175,9 +175,14 @@ module ToDoApp.Api {
         }
 
         public getProjectTasks(idProject: number, offset: number, success: ((data: any) => void)) {
-        	this.http.get(this.way + '/tasks?session=' + this.session 
+        	let pageSize = 20;
+            if (offset < 0) {
+              pageSize = offset + 20;
+              offset = 0;  
+            }
+            this.http.get(this.way + '/tasks?session=' + this.session 
         		                   + '&project_id=' + idProject 
-        		                   + '&paging_size=20&paging_offset=' + offset)
+        		                   + '&paging_size='+ pageSize +'&paging_offset=' + offset)
             .then((data: any) => {
             	success(data.data);
             },

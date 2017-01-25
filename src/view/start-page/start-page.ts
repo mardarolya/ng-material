@@ -19,6 +19,7 @@ module ToDoApp.StartPage {
         private state: any;
         private mdDialog: any;
         private timeout: any;
+        public offset: number=0;
         
     	constructor($http, $mdSidenav, $state, $scope, $mdDialog, $timeout){
            super($http, $mdSidenav, $mdDialog); 
@@ -72,20 +73,53 @@ module ToDoApp.StartPage {
                     }, 1500);
                     this.getTasks(this.currentProjectId);
                });
-
-
         }
 
         public getTasks(projectID: number) {
-            this.currentProjectId = projectID;
-            this.setActive();
-            this.showSearch = true;
-            this.getProjectTasks(this.currentProjectId, 0, (data: any) => {
-                if (!document.querySelector(".item-project .active")) {
-                    this.setActive();
-                }
+          this.currentProjectId = projectID;
+          this.setActive();
+          this.showSearch = true;
+          let taskCount
+          for(let i=0, max=this.projects.length; i < max; i++) {
+            if (this.projects[i].Project.id == this.currentProjectId) {
+              taskCount = this.projects[i].Project.task_count;
+              break;
+            }
+          }
+          
+          if (taskCount > 20) {
+            this.offset = taskCount - 20;
+          }  
+          this.getProjectTasks(this.currentProjectId, this.offset, (data: any) => {
+              if (!document.querySelector(".item-project .active")) {
+                  this.setActive();
+              }
+              this.tasks = [];
+              this.taskList(data);
+          });
+        }
+
+        public paginator(){
+          let timerId = setTimeout(function tick() {
+            let lastBlock = document.querySelector(".task-conteiner .task:last-child md-card-content:last-child");
+            let coord = lastBlock.getBoundingClientRect();
+            let documentHeight = document.documentElement.clientHeight;
+            let r = documentHeight - coord.top;
+            if (r > 0 && r < 450) {
+              // загрузить партию
+              this.offset-= 20;
+              this.getProjectTasks(this.currentProjectId, this.offset, (data: any) => {
                 this.taskList(data);
-            });
+                if (this.offset < 0) {
+                  clearTimeout(timerId);
+                } else {
+                  timerId = setTimeout(tick, 1000);
+                }
+              });
+            } else {
+              timerId = setTimeout(tick, 1000);
+            }
+          }, 1000);
         }
 
         public setActive(){
@@ -102,7 +136,6 @@ module ToDoApp.StartPage {
         public taskList(data: any) {
             let tasksForWork = data.tasks;
             let dtParts = [];
-            this.tasks = [];
 
             for(let i = tasksForWork.length -1 , min = 0; i >= min; i--) {
                 dtParts = ((tasksForWork[i].Task.created_at).split(" ")[0]).split("-");

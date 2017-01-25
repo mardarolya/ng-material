@@ -214,7 +214,7 @@ body {
 .conteiner .task-conteiner {
   margin: 0 auto;
   width: 100%;
-  max-height: calc(100% - 51px);
+  height: calc(100% - 51px);
   overflow-y: auto;
 }
 .conteiner .task-conteiner md-card {

@@ -107,9 +107,14 @@ var ToDoApp;
                 });
             };
             ApiWork.prototype.getProjectTasks = function (idProject, offset, success) {
+                var pageSize = 20;
+                if (offset < 0) {
+                    pageSize = offset + 20;
+                    offset = 0;
+                }
                 this.http.get(this.way + '/tasks?session=' + this.session
                     + '&project_id=' + idProject
-                    + '&paging_size=20&paging_offset=' + offset)
+                    + '&paging_size=' + pageSize + '&paging_offset=' + offset)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
