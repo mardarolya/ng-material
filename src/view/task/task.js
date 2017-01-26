@@ -12,18 +12,18 @@ var ToDoApp;
         var task = angular.module("ToDoApp.Task", ["ui.router"]);
         var Task = (function (_super) {
             __extends(Task, _super);
-            function Task($http, $state, $stateParams, $mdSidenav, $mdDialog) {
-                var _this = _super.call(this, $http, $mdSidenav, $mdDialog) || this;
-                _this.mdSidenav = $mdSidenav;
+            function Task($state, $stateParams, generalFunc, API) {
+                var _this = _super.call(this, generalFunc, API) || this;
+                // this.mdSidenav = $mdSidenav;
                 _this.isShowTask = $stateParams.state == "Show";
                 _this.idTask = $stateParams.taskId;
                 _this.idProject = $stateParams.projectId;
-                _this.mdDialog = $mdDialog;
+                // this.mdDialog = $mdDialog; 
                 if (_this.idTask == 0) {
                     _this.panelHeader = "Create new task";
                 }
                 else {
-                    _this.fetchTask(_this.idTask, function (data) {
+                    _this.api.fetchTask(_this.idTask, function (data) {
                         _this.taskName = data.Task.title;
                         _this.taskDescription = data.Task.description;
                         _this.panelBody = data.Task.description;
@@ -40,13 +40,13 @@ var ToDoApp;
                 var _this = this;
                 if (this.taskName && this.taskName != "" && this.taskName.charCodeAt() != 127) {
                     if (this.idTask == 0) {
-                        this.addTask({ session: "", Project: { id: this.idProject }, Task: { title: this.taskName, description: this.taskDescription } }, function () {
+                        this.api.addTask({ session: "", Project: { id: this.idProject }, Task: { title: this.taskName, description: this.taskDescription } }, function () {
                             localStorage.setItem("reloadProject", "true");
                             _this.close();
                         });
                     }
                     else {
-                        this.editTask({ session: "", Project: { id: this.idProject }, Task: { id: this.idTask, title: this.taskName, description: this.taskDescription } }, function () {
+                        this.api.editTask({ session: "", Project: { id: this.idProject }, Task: { id: this.idTask, title: this.taskName, description: this.taskDescription } }, function () {
                             localStorage.setItem("reloadProject", "true");
                             _this.close();
                         });
@@ -55,15 +55,15 @@ var ToDoApp;
             };
             Task.prototype.dlTask = function (ev) {
                 var _this = this;
-                this.showConfirm(ev, "Would you like to delete this task?", "Delete", function () {
-                    _this.deleteTask(_this.idTask, function () {
+                this.func.showConfirm({ event: ev, title: "Would you like to delete this task?", okButton: "Delete" }, function () {
+                    _this.api.deleteTask(_this.idTask, function () {
                         localStorage.setItem("reloadProject", "true");
                         _this.close();
                     });
                 });
             };
             return Task;
-        }(ToDoApp.Api.ApiWork));
+        }(ToDoApp.General.mainController));
         task.controller("task", Task);
     })(Task = ToDoApp.Task || (ToDoApp.Task = {}));
 })(ToDoApp || (ToDoApp = {}));

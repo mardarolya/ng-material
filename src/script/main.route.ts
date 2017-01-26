@@ -1,4 +1,6 @@
 
+/// <reference path="api.ts" />
+
 declare var angular: any;
 
 module ToDoApp {
@@ -30,5 +32,8 @@ module ToDoApp {
 	    					controllerAs: "c"
 			    	});
 			  $urlRouterProvider.otherwise('/StartPage');
-			});
+			})
+		.service("generalFunc", ["$mdDialog", "$mdSidenav", ToDoApp.General.generalFunc.generalFunc])
+		.service("API", ["$http", ToDoApp.General.apiFunc.apiFunc])
+		.directive('ngEsc', ToDoApp.General.generalFunc.ngEsc);
 }

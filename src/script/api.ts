@@ -1,8 +1,8 @@
 
 declare var angular: any;
-
-module ToDoApp.Api {
-    'use strict';
+//корневой файл с общими функциями и апи
+module ToDoApp.General {
+    "use strict";
 
     interface addProject {
     	session: string,
@@ -49,81 +49,127 @@ module ToDoApp.Api {
         }
     }
 
-    class generalFunc {
-        private mdSidenav: any;
-        private mdDialog: any;
+    export interface confirmParams {
+        event: any;
+        title: string;
+        okButton: string;
+    }
 
-        constructor($mdSidenav, $mdDialog){
-            this.mdSidenav = $mdSidenav;
-            this.mdDialog = $mdDialog;
-        }
+    export interface generalFunctions {
+        showConfirm(confirmParams: confirmParams, success: (() => void)) : void,
+        close(namePanel?: string): void;
+        open(namePanel?: string): void;
+    }
 
-        public showConfirm(event, title, okButtonTitle, success: (() => void)) {
-            var confirm = this.mdDialog.confirm()
-                .title(title)
+    export interface apiWork {
+        isSessionAlive(success: (() => void)) : void,
+        getUserInfo(success: ((data: any) => void)) : void,
+        getProgects(success: ((data: any) => void)) : void,
+        getProjectTasks(idProject: number, offset: number, success: ((data: any) => void)) : void,
+        fetchProject(idProject: number, success: ((data) => void)) : void,
+        addProject(body: addProject, success: (() => void)) : void,
+        editProject(body: editProject, success: (() => void)) : void,
+        deleteProject(idProject: number, success: (() => void)) : void,
+        addTask(body: addTask, success: (() => void)) : void,
+        editTask(body: editTask, success: (() => void)) : void,
+        deleteTask(idTask: number, success: (() => void)) : void,
+        doneTask(body: doneTask, success: (() => void)) : void,
+        fetchTask(idTask: number, success: ((data) => void)) : void
+    }
+
+    // общи функции
+    export class generalFunc {
+        // окно согласиться/отменить
+        private static showConfirm($mdDialog: any, confirmParams: confirmParams, success: (() => void)) {
+            let mdDialog = $mdDialog;
+            let confirm = mdDialog.confirm()
+                .title(confirmParams.title)
                 .textContent('')
-                .ariaLabel(okButtonTitle)
-                .targetEvent(event)
-                .ok(okButtonTitle)
+                .ariaLabel(confirmParams.okButton)
+                .targetEvent(confirmParams.event)
+                .ok(confirmParams.okButton)
                 .cancel('Cancel');
 
-                this.mdDialog.show(confirm).then(() => {
+            return mdDialog.show(confirm).then(() => {
                     success();
                 }, () => {});
         }
-
-        public close() {
-           this.mdSidenav("rightPanel").close(); 
+        // закрыть панель, по умолчанию - правую    
+        private static close($mdSidenav: any, namePanel: string="rightPanel") {
+           let mdSidenav = $mdSidenav;
+           return mdSidenav(namePanel).close(); 
         }
+        //открыть панель
+        private static open($mdSidenav: any, namePanel: string="rightPanel") {
+           let mdSidenav = $mdSidenav;
+           return mdSidenav(namePanel).open(); 
+        }
+        // работа кнопки ESC 
+        public static ngEsc() {
+            return (scope, element, attrs) => {
+                    element.bind("keydown keypress keyup", function (event) {
+                        if(event.which === 27) {
+                            scope.$apply(function (){
+                                scope.$eval(attrs.ngEsc);
+                            });
 
+                            event.preventDefault();
+                        }
+                    });
+                }
+        }
+        //собираем все методы
+        public static generalFunc($mdDialog: any, $mdSidenav: any) {
+            return {
+                showConfirm(confirmParams: confirmParams, success: (() => void)) {
+                    generalFunc.showConfirm($mdDialog, confirmParams, success);
+                },
+                close(namePanel?: string){
+                    generalFunc.close($mdSidenav, namePanel);
+                },
+                open(namePanel?: string) {
+                    generalFunc.open($mdSidenav, namePanel);
+                }
+            }
+        }
     }
 
-    export class ApiWork extends generalFunc{
-    	private way:     string;
-    	private http:    any;
-    	private session: string;
-
-    	constructor($http, $mdSidenav, $mdDialog){
-
-            super($mdSidenav, $mdDialog);
-
-    		this.http = $http;
-    		this.way = "https://api-test-task.decodeapps.io";
-    		this.session = this.getCookie("mySession");
-    	}
-
-    	public isSessionAlive(success: (() => void)) {
-    		if (this.session && this.session != "") {
-    			this.http.get(this.way + '/session?session=' + this.session)
+    // апи
+    export class apiFunc{
+    	private static way: string = "https://api-test-task.decodeapps.io";
+        // жива ли сессиия
+       	private static isSessionAlive($http, success: (() => void)) {
+            let session = apiFunc.getCookie("mySession");
+    		if (session && session != "") {
+    			$http.get(this.way + '/session?session=' + session)
                     .then((data: any) => {
                         success();
                     },
                     (error) => {
-                       this.createSession(success);
+                       this.createSession($http, success);
                     });  
     		} else {
-    			this.createSession(success);
+    			this.createSession($http, success);
     		}
     	}
-
-    	private createSession(success: (() => void)) {
-    		this.http.post(this.way + '/signup', {"New item":""})
+        // создать сессию
+    	private static createSession($http, success: (() => void)) {
+    		$http.post(this.way + '/signup', {"New item":""})
             	.then((data: any) => {
-            		this.session = data.data.session;	
-                	this.setCookie("mySession", data.data.session, null);
+                	apiFunc.setCookie("mySession", data.data.session, null);
                     success();
             	},
             	(error: any) =>{
               		console.log(error);
             	});		
     	}
-
-    	private getCookie(name: string) {
+        // забрать куки
+    	private static getCookie(name: string) {
             var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
             return matches ? decodeURIComponent(matches[1]) : undefined;
         }
-
-        private setCookie(name: string, value: any, options: any) {
+        // установить куки
+        private static setCookie(name: string, value: any, options: any) {
             options = options || {};
 
             var expires = options.expires;
@@ -151,9 +197,10 @@ module ToDoApp.Api {
             }
             document.cookie = updatedCookie;
         }
-
-        public getUserInfo(success: ((data: any) => void)) {
-        	this.http.get(this.way + '/account?session='+this.session)
+        // получить информацию по пользователю
+        private static getUserInfo($http, success: ((data: any) => void)) {
+            let session = apiFunc.getCookie("mySession");
+        	$http.get(this.way + '/account?session='+session)
                 .then(
                     (data: any) => {
                       success(data.data);
@@ -162,9 +209,10 @@ module ToDoApp.Api {
                       console.log(error);
                     });  
         }
-
-        public getProgects(success: ((data: any) => void)) {
-            this.http.get(this.way + '/projects?session=' + this.session)
+        // получить проекты
+        private static getProgects($http, success: ((data: any) => void)) {
+            let session = apiFunc.getCookie("mySession");
+            $http.get(this.way + '/projects?session=' + session)
                 .then(
                     (data: any) => {
                     	 success(data.data);
@@ -173,14 +221,15 @@ module ToDoApp.Api {
                         console.log(error);
                     });  
         }
-
-        public getProjectTasks(idProject: number, offset: number, success: ((data: any) => void)) {
+        // получить таски проекта
+        private static getProjectTasks($http, idProject: number, offset: number, success: ((data: any) => void)) {
         	let pageSize = 20;
             if (offset < 0) {
               pageSize = offset + 20;
               offset = 0;  
             }
-            this.http.get(this.way + '/tasks?session=' + this.session 
+            let session = apiFunc.getCookie("mySession");
+            $http.get(this.way + '/tasks?session=' + session 
         		                   + '&project_id=' + idProject 
         		                   + '&paging_size='+ pageSize +'&paging_offset=' + offset)
             .then((data: any) => {
@@ -190,9 +239,10 @@ module ToDoApp.Api {
             		console.log(error);
             	});
         }
-
-        public fetchProject(idProject: number, success: ((data) => void)) {
-        	 this.http.get(this.way + '/projects/project?session=' + this.session + "&project_id=" + idProject)
+        // получить информацию по проекту
+        private static fetchProject($http, idProject: number, success: ((data) => void)) {
+        	let session = apiFunc.getCookie("mySession"); 
+            $http.get(this.way + '/projects/project?session=' + session + "&project_id=" + idProject)
                 .then(
                     (data: any) => {
                     	 success(data.data);
@@ -201,10 +251,10 @@ module ToDoApp.Api {
                         console.log(error);
                     });  
         }
-
-        public addProject(body: addProject, success: (() => void)){
-        	body.session = this.session;
-        	this.http.post(this.way + "/projects/project", body)
+        // добавить проект
+        private static addProject($http, body: addProject, success: (() => void)){
+        	body.session = apiFunc.getCookie("mySession");
+        	$http.post(this.way + "/projects/project", body)
                     .then((data: any) => {
                         success();
                     },
@@ -212,10 +262,10 @@ module ToDoApp.Api {
                         console.log(error);
                 });
         }
-
-        public editProject(body: editProject, success: (() => void)) {
-        	body.session = this.session;
-        	this.http.post(this.way + '/projects/project', body)
+        // править проект
+        private static editProject($http, body: editProject, success: (() => void)) {
+        	body.session = apiFunc.getCookie("mySession");
+        	$http.post(this.way + '/projects/project', body)
                 .then((data) => {
                     success();
                 },
@@ -223,10 +273,10 @@ module ToDoApp.Api {
                     console.log(error);
                 });
         }
-
-        public deleteProject(idProject: number, success: (() => void)) {
+        // удалить проект
+        private static deleteProject($http, idProject: number, success: (() => void)) {
         	if (idProject != 0) {
-                this.http.delete(this.way + '/projects/project?session=' + this.session + '&project_id=' + idProject)
+                $http.delete(this.way + '/projects/project?session=' + apiFunc.getCookie("mySession") + '&project_id=' + idProject)
                     .then(() => {
                         success();
                     },                     
@@ -235,10 +285,10 @@ module ToDoApp.Api {
                 });  
             }
         }
-
-        public addTask(body: addTask, success: (() => void)) {
-        	body.session = this.session;
-        	this.http.post(this.way + "/tasks/task", body)
+        // добавить таску
+        private static addTask($http, body: addTask, success: (() => void)) {
+        	body.session = apiFunc.getCookie("mySession");
+        	$http.post(this.way + "/tasks/task", body)
                     .then((data:any) => {
                         success();
                     },
@@ -246,10 +296,10 @@ module ToDoApp.Api {
                         console.log(error);
                     });
         }
-
-        public editTask(body: editTask, success: (() => void)){
-        	body.session = this.session;
-        	this.http.post(this.way + "/tasks/task", body)
+        // править таску
+        private static editTask($http, body: editTask, success: (() => void)){
+        	body.session = apiFunc.getCookie("mySession");
+        	$http.post(this.way + "/tasks/task", body)
                     .then((data: any) => {
                         success();
                 },
@@ -257,10 +307,10 @@ module ToDoApp.Api {
                   console.log(error);
                 });
         }
-
-        public deleteTask(idTask: number, success: (() => void)){
+        // удалить таску
+        private static deleteTask($http, idTask: number, success: (() => void)){
         	if (idTask != 0) {
-                this.http.delete(this.way + '/tasks/task?session=' + this.session + '&task_id=' + idTask)
+                $http.delete(this.way + '/tasks/task?session=' + apiFunc.getCookie("mySession") + '&task_id=' + idTask)
                 .then(() => {
                     success();
                 },                     
@@ -269,10 +319,10 @@ module ToDoApp.Api {
                 });  
             }
         }
-
-        public doneTask(body: doneTask, success: (() => void)){
-        	body.session = this.session;
-        	this.http.post(this.way + "/tasks/task/complite", body)
+        // выполнить таску
+        private static doneTask($http, body: doneTask, success: (() => void)){
+        	body.session = apiFunc.getCookie("mySession");
+        	$http.post(this.way + "/tasks/task/complite", body)
                 .then((data: any) => {
                    success();
                 },
@@ -280,9 +330,9 @@ module ToDoApp.Api {
                   console.log(error);
                 });
         }
-
-        public fetchTask(idTask: number, success: ((data) => void)){
- 			this.http.get(this.way + '/tasks/task?session=' + this.session + "&task_id=" + idTask)
+        // получить информацию по таске
+        private static fetchTask($http, idTask: number, success: ((data) => void)){
+ 			$http.get(this.way + '/tasks/task?session=' + apiFunc.getCookie("mySession") + "&task_id=" + idTask)
                 .then(
                     (data: any) => {
                     	 success(data.data);
@@ -291,5 +341,69 @@ module ToDoApp.Api {
                         console.log(error);
                     });  
         }
+
+        public static apiFunc($http: any) {
+            return {
+                isSessionAlive(success: (() => void)) {
+                    apiFunc.isSessionAlive($http, success);
+                },
+                getUserInfo(success: ((data: any) => void)) {
+                    apiFunc.getUserInfo($http, success);
+                },
+                getProgects(success: ((data: any) => void)) {
+                    apiFunc.getProgects($http, success);
+                },
+                getProjectTasks(idProject: number, offset: number, success: ((data: any) => void)) {
+                    apiFunc.getProjectTasks($http, idProject, offset, success);
+                },
+                fetchProject(idProject: number, success: ((data) => void)) {
+                    apiFunc.fetchProject($http, idProject, success);
+                },
+                addProject(body: addProject, success: (() => void)) {
+                    apiFunc.addProject($http, body, success);
+                },
+                editProject(body: editProject, success: (() => void)) {
+                    apiFunc.editProject($http, body, success); 
+                },
+                deleteProject(idProject: number, success: (() => void)) {
+                    apiFunc.deleteProject($http, idProject, success);
+                },
+                addTask(body: addTask, success: (() => void)) {
+                    apiFunc.addTask($http, body, success);
+                },
+                editTask(body: editTask, success: (() => void)) {
+                    apiFunc.editTask($http, body, success);
+                },
+                deleteTask(idTask: number, success: (() => void)) {
+                    apiFunc.deleteTask($http, idTask, success);
+                },
+                doneTask(body: doneTask, success: (() => void)) {
+                    apiFunc.doneTask($http, body, success);
+                },
+                fetchTask(idTask: number, success: ((data) => void)) {
+                    apiFunc.fetchTask($http, idTask, success);
+                } 
+            }
+        }
+    }
+
+    //корневой контроллер
+    export class mainController {
+        public func: generalFunctions;
+        public api: apiWork;
+
+        constructor(generalFunc, API){
+            this.func = generalFunc;
+            this.api = API;
+        }
+
+        public close() {
+            this.func.close();
+        }
+
+        public open() {
+            this.func.open();
+        }
+
     }
 }

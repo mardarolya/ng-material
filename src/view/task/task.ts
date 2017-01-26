@@ -7,7 +7,7 @@ module ToDoApp.Task {
 
     var task = angular.module("ToDoApp.Task", ["ui.router"]);
 
-    class Task extends ToDoApp.Api.ApiWork {
+    class Task extends ToDoApp.General.mainController {
     	public mdSidenav: any;
 		public isShowTask: boolean;
 		public panelHeader: string;
@@ -19,20 +19,20 @@ module ToDoApp.Task {
 		private idProject: number;
 		private mdDialog: any;
 
-    	constructor($http, $state, $stateParams, $mdSidenav, $mdDialog){
-    		super($http, $mdSidenav, $mdDialog);
+    	constructor($state, $stateParams, generalFunc, API){
+    		super(generalFunc, API);
 
-    		this.mdSidenav = $mdSidenav;
+    		// this.mdSidenav = $mdSidenav;
 
     		this.isShowTask = $stateParams.state == "Show";
     		this.idTask = $stateParams.taskId;
     		this.idProject = $stateParams.projectId;
-    		this.mdDialog = $mdDialog; 
+    		// this.mdDialog = $mdDialog; 
 
     		if (this.idTask == 0) {
     			this.panelHeader = "Create new task";    			
     		} else {
-    			this.fetchTask(this.idTask, (data) => {
+    			this.api.fetchTask(this.idTask, (data) => {
     				this.taskName = data.Task.title;
     				this.taskDescription = data.Task.description;
     				this.panelBody = data.Task.description;
@@ -50,12 +50,12 @@ module ToDoApp.Task {
     	public saveTask(){
     		if (this.taskName && this.taskName != "" && this.taskName.charCodeAt() != 127) {
     			if (this.idTask == 0) {
-	    			this.addTask({session: "", Project: {id: this.idProject}, Task: {title: this.taskName, description: this.taskDescription}}, () => {
+	    			this.api.addTask({session: "", Project: {id: this.idProject}, Task: {title: this.taskName, description: this.taskDescription}}, () => {
 	    				localStorage.setItem("reloadProject", "true");
 	    				this.close();	
 	    			});
 	    		} else {
-	    			this.editTask({session: "",  Project: {id: this.idProject}, Task: {id: this.idTask, title: this.taskName, description: this.taskDescription}}, () => {
+	    			this.api.editTask({session: "",  Project: {id: this.idProject}, Task: {id: this.idTask, title: this.taskName, description: this.taskDescription}}, () => {
 	    				localStorage.setItem("reloadProject", "true");
 	    				this.close();
 	    			});
@@ -64,8 +64,8 @@ module ToDoApp.Task {
     	}
 
     	public dlTask(ev) {
-    		this.showConfirm(ev, "Would you like to delete this task?", "Delete", () => {
-	    			this.deleteTask(this.idTask, () => {
+            this.func.showConfirm({event: ev, title: "Would you like to delete this task?", okButton: "Delete"}, () => {
+	    			this.api.deleteTask(this.idTask, () => {
 	    			localStorage.setItem("reloadProject", "true");
 	    			this.close();
     			})

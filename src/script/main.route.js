@@ -1,3 +1,4 @@
+/// <reference path="api.ts" />
 var ToDoApp;
 (function (ToDoApp) {
     'use strict';
@@ -27,5 +28,8 @@ var ToDoApp;
             controllerAs: "c"
         });
         $urlRouterProvider.otherwise('/StartPage');
-    });
+    })
+        .service("generalFunc", ["$mdDialog", "$mdSidenav", ToDoApp.General.generalFunc.generalFunc])
+        .service("API", ["$http", ToDoApp.General.apiFunc.apiFunc])
+        .directive('ngEsc', ToDoApp.General.generalFunc.ngEsc);
 })(ToDoApp || (ToDoApp = {}));

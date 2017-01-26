@@ -1,74 +1,106 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+//корневой файл с общими функциями и апи
 var ToDoApp;
 (function (ToDoApp) {
-    var Api;
-    (function (Api) {
-        'use strict';
+    var General;
+    (function (General) {
+        "use strict";
+        // общи функции
         var generalFunc = (function () {
-            function generalFunc($mdSidenav, $mdDialog) {
-                this.mdSidenav = $mdSidenav;
-                this.mdDialog = $mdDialog;
+            function generalFunc() {
             }
-            generalFunc.prototype.showConfirm = function (event, title, okButtonTitle, success) {
-                var confirm = this.mdDialog.confirm()
-                    .title(title)
+            // окно согласиться/отменить
+            generalFunc.showConfirm = function ($mdDialog, confirmParams, success) {
+                var mdDialog = $mdDialog;
+                var confirm = mdDialog.confirm()
+                    .title(confirmParams.title)
                     .textContent('')
-                    .ariaLabel(okButtonTitle)
-                    .targetEvent(event)
-                    .ok(okButtonTitle)
+                    .ariaLabel(confirmParams.okButton)
+                    .targetEvent(confirmParams.event)
+                    .ok(confirmParams.okButton)
                     .cancel('Cancel');
-                this.mdDialog.show(confirm).then(function () {
+                return mdDialog.show(confirm).then(function () {
                     success();
                 }, function () { });
             };
-            generalFunc.prototype.close = function () {
-                this.mdSidenav("rightPanel").close();
+            // закрыть панель, по умолчанию - правую    
+            generalFunc.close = function ($mdSidenav, namePanel) {
+                if (namePanel === void 0) { namePanel = "rightPanel"; }
+                var mdSidenav = $mdSidenav;
+                return mdSidenav(namePanel).close();
+            };
+            //открыть панель
+            generalFunc.open = function ($mdSidenav, namePanel) {
+                if (namePanel === void 0) { namePanel = "rightPanel"; }
+                var mdSidenav = $mdSidenav;
+                return mdSidenav(namePanel).open();
+            };
+            // работа кнопки ESC 
+            generalFunc.ngEsc = function () {
+                return function (scope, element, attrs) {
+                    element.bind("keydown keypress keyup", function (event) {
+                        if (event.which === 27) {
+                            scope.$apply(function () {
+                                scope.$eval(attrs.ngEsc);
+                            });
+                            event.preventDefault();
+                        }
+                    });
+                };
+            };
+            //собираем все методы
+            generalFunc.generalFunc = function ($mdDialog, $mdSidenav) {
+                return {
+                    showConfirm: function (confirmParams, success) {
+                        generalFunc.showConfirm($mdDialog, confirmParams, success);
+                    },
+                    close: function (namePanel) {
+                        generalFunc.close($mdSidenav, namePanel);
+                    },
+                    open: function (namePanel) {
+                        generalFunc.open($mdSidenav, namePanel);
+                    }
+                };
             };
             return generalFunc;
         }());
-        var ApiWork = (function (_super) {
-            __extends(ApiWork, _super);
-            function ApiWork($http, $mdSidenav, $mdDialog) {
-                var _this = _super.call(this, $mdSidenav, $mdDialog) || this;
-                _this.http = $http;
-                _this.way = "https://api-test-task.decodeapps.io";
-                _this.session = _this.getCookie("mySession");
-                return _this;
+        General.generalFunc = generalFunc;
+        // апи
+        var apiFunc = (function () {
+            function apiFunc() {
             }
-            ApiWork.prototype.isSessionAlive = function (success) {
+            // жива ли сессиия
+            apiFunc.isSessionAlive = function ($http, success) {
                 var _this = this;
-                if (this.session && this.session != "") {
-                    this.http.get(this.way + '/session?session=' + this.session)
+                var session = apiFunc.getCookie("mySession");
+                if (session && session != "") {
+                    $http.get(this.way + '/session?session=' + session)
                         .then(function (data) {
                         success();
                     }, function (error) {
-                        _this.createSession(success);
+                        _this.createSession($http, success);
                     });
                 }
                 else {
-                    this.createSession(success);
+                    this.createSession($http, success);
                 }
             };
-            ApiWork.prototype.createSession = function (success) {
-                var _this = this;
-                this.http.post(this.way + '/signup', { "New item": "" })
+            // создать сессию
+            apiFunc.createSession = function ($http, success) {
+                $http.post(this.way + '/signup', { "New item": "" })
                     .then(function (data) {
-                    _this.session = data.data.session;
-                    _this.setCookie("mySession", data.data.session, null);
+                    apiFunc.setCookie("mySession", data.data.session, null);
                     success();
                 }, function (error) {
                     console.log(error);
                 });
             };
-            ApiWork.prototype.getCookie = function (name) {
+            // забрать куки
+            apiFunc.getCookie = function (name) {
                 var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
                 return matches ? decodeURIComponent(matches[1]) : undefined;
             };
-            ApiWork.prototype.setCookie = function (name, value, options) {
+            // установить куки
+            apiFunc.setCookie = function (name, value, options) {
                 options = options || {};
                 var expires = options.expires;
                 if (typeof expires == "number" && expires) {
@@ -90,29 +122,35 @@ var ToDoApp;
                 }
                 document.cookie = updatedCookie;
             };
-            ApiWork.prototype.getUserInfo = function (success) {
-                this.http.get(this.way + '/account?session=' + this.session)
+            // получить информацию по пользователю
+            apiFunc.getUserInfo = function ($http, success) {
+                var session = apiFunc.getCookie("mySession");
+                $http.get(this.way + '/account?session=' + session)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
                     console.log(error);
                 });
             };
-            ApiWork.prototype.getProgects = function (success) {
-                this.http.get(this.way + '/projects?session=' + this.session)
+            // получить проекты
+            apiFunc.getProgects = function ($http, success) {
+                var session = apiFunc.getCookie("mySession");
+                $http.get(this.way + '/projects?session=' + session)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
                     console.log(error);
                 });
             };
-            ApiWork.prototype.getProjectTasks = function (idProject, offset, success) {
+            // получить таски проекта
+            apiFunc.getProjectTasks = function ($http, idProject, offset, success) {
                 var pageSize = 20;
                 if (offset < 0) {
                     pageSize = offset + 20;
                     offset = 0;
                 }
-                this.http.get(this.way + '/tasks?session=' + this.session
+                var session = apiFunc.getCookie("mySession");
+                $http.get(this.way + '/tasks?session=' + session
                     + '&project_id=' + idProject
                     + '&paging_size=' + pageSize + '&paging_offset=' + offset)
                     .then(function (data) {
@@ -121,35 +159,40 @@ var ToDoApp;
                     console.log(error);
                 });
             };
-            ApiWork.prototype.fetchProject = function (idProject, success) {
-                this.http.get(this.way + '/projects/project?session=' + this.session + "&project_id=" + idProject)
+            // получить информацию по проекту
+            apiFunc.fetchProject = function ($http, idProject, success) {
+                var session = apiFunc.getCookie("mySession");
+                $http.get(this.way + '/projects/project?session=' + session + "&project_id=" + idProject)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
                     console.log(error);
                 });
             };
-            ApiWork.prototype.addProject = function (body, success) {
-                body.session = this.session;
-                this.http.post(this.way + "/projects/project", body)
+            // добавить проект
+            apiFunc.addProject = function ($http, body, success) {
+                body.session = apiFunc.getCookie("mySession");
+                $http.post(this.way + "/projects/project", body)
                     .then(function (data) {
                     success();
                 }, function (error) {
                     console.log(error);
                 });
             };
-            ApiWork.prototype.editProject = function (body, success) {
-                body.session = this.session;
-                this.http.post(this.way + '/projects/project', body)
+            // править проект
+            apiFunc.editProject = function ($http, body, success) {
+                body.session = apiFunc.getCookie("mySession");
+                $http.post(this.way + '/projects/project', body)
                     .then(function (data) {
                     success();
                 }, function (error) {
                     console.log(error);
                 });
             };
-            ApiWork.prototype.deleteProject = function (idProject, success) {
+            // удалить проект
+            apiFunc.deleteProject = function ($http, idProject, success) {
                 if (idProject != 0) {
-                    this.http["delete"](this.way + '/projects/project?session=' + this.session + '&project_id=' + idProject)
+                    $http["delete"](this.way + '/projects/project?session=' + apiFunc.getCookie("mySession") + '&project_id=' + idProject)
                         .then(function () {
                         success();
                     }, function (error) {
@@ -157,27 +200,30 @@ var ToDoApp;
                     });
                 }
             };
-            ApiWork.prototype.addTask = function (body, success) {
-                body.session = this.session;
-                this.http.post(this.way + "/tasks/task", body)
+            // добавить таску
+            apiFunc.addTask = function ($http, body, success) {
+                body.session = apiFunc.getCookie("mySession");
+                $http.post(this.way + "/tasks/task", body)
                     .then(function (data) {
                     success();
                 }, function (error) {
                     console.log(error);
                 });
             };
-            ApiWork.prototype.editTask = function (body, success) {
-                body.session = this.session;
-                this.http.post(this.way + "/tasks/task", body)
+            // править таску
+            apiFunc.editTask = function ($http, body, success) {
+                body.session = apiFunc.getCookie("mySession");
+                $http.post(this.way + "/tasks/task", body)
                     .then(function (data) {
                     success();
                 }, function (error) {
                     console.log(error);
                 });
             };
-            ApiWork.prototype.deleteTask = function (idTask, success) {
+            // удалить таску
+            apiFunc.deleteTask = function ($http, idTask, success) {
                 if (idTask != 0) {
-                    this.http["delete"](this.way + '/tasks/task?session=' + this.session + '&task_id=' + idTask)
+                    $http["delete"](this.way + '/tasks/task?session=' + apiFunc.getCookie("mySession") + '&task_id=' + idTask)
                         .then(function () {
                         success();
                     }, function (error) {
@@ -185,25 +231,86 @@ var ToDoApp;
                     });
                 }
             };
-            ApiWork.prototype.doneTask = function (body, success) {
-                body.session = this.session;
-                this.http.post(this.way + "/tasks/task/complite", body)
+            // выполнить таску
+            apiFunc.doneTask = function ($http, body, success) {
+                body.session = apiFunc.getCookie("mySession");
+                $http.post(this.way + "/tasks/task/complite", body)
                     .then(function (data) {
                     success();
                 }, function (error) {
                     console.log(error);
                 });
             };
-            ApiWork.prototype.fetchTask = function (idTask, success) {
-                this.http.get(this.way + '/tasks/task?session=' + this.session + "&task_id=" + idTask)
+            // получить информацию по таске
+            apiFunc.fetchTask = function ($http, idTask, success) {
+                $http.get(this.way + '/tasks/task?session=' + apiFunc.getCookie("mySession") + "&task_id=" + idTask)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
                     console.log(error);
                 });
             };
-            return ApiWork;
-        }(generalFunc));
-        Api.ApiWork = ApiWork;
-    })(Api = ToDoApp.Api || (ToDoApp.Api = {}));
+            apiFunc.apiFunc = function ($http) {
+                return {
+                    isSessionAlive: function (success) {
+                        apiFunc.isSessionAlive($http, success);
+                    },
+                    getUserInfo: function (success) {
+                        apiFunc.getUserInfo($http, success);
+                    },
+                    getProgects: function (success) {
+                        apiFunc.getProgects($http, success);
+                    },
+                    getProjectTasks: function (idProject, offset, success) {
+                        apiFunc.getProjectTasks($http, idProject, offset, success);
+                    },
+                    fetchProject: function (idProject, success) {
+                        apiFunc.fetchProject($http, idProject, success);
+                    },
+                    addProject: function (body, success) {
+                        apiFunc.addProject($http, body, success);
+                    },
+                    editProject: function (body, success) {
+                        apiFunc.editProject($http, body, success);
+                    },
+                    deleteProject: function (idProject, success) {
+                        apiFunc.deleteProject($http, idProject, success);
+                    },
+                    addTask: function (body, success) {
+                        apiFunc.addTask($http, body, success);
+                    },
+                    editTask: function (body, success) {
+                        apiFunc.editTask($http, body, success);
+                    },
+                    deleteTask: function (idTask, success) {
+                        apiFunc.deleteTask($http, idTask, success);
+                    },
+                    doneTask: function (body, success) {
+                        apiFunc.doneTask($http, body, success);
+                    },
+                    fetchTask: function (idTask, success) {
+                        apiFunc.fetchTask($http, idTask, success);
+                    }
+                };
+            };
+            return apiFunc;
+        }());
+        apiFunc.way = "https://api-test-task.decodeapps.io";
+        General.apiFunc = apiFunc;
+        //корневой контроллер
+        var mainController = (function () {
+            function mainController(generalFunc, API) {
+                this.func = generalFunc;
+                this.api = API;
+            }
+            mainController.prototype.close = function () {
+                this.func.close();
+            };
+            mainController.prototype.open = function () {
+                this.func.open();
+            };
+            return mainController;
+        }());
+        General.mainController = mainController;
+    })(General = ToDoApp.General || (ToDoApp.General = {}));
 })(ToDoApp || (ToDoApp = {}));

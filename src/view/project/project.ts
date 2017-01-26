@@ -7,7 +7,7 @@ module ToDoApp.Project {
 
     var project = angular.module("ToDoApp.Project", ["ui.router"]);
 
-    class Project extends ToDoApp.Api.ApiWork {
+    class Project extends ToDoApp.General.mainController {
 		public nameProject: string;
 		public panelHeader: string;
 
@@ -15,8 +15,8 @@ module ToDoApp.Project {
 		private mdSidenav: any;
 		private state: any;
 
-    	constructor($http, $state, $stateParams, $mdSidenav){
-    		super($http);
+    	constructor($state, $stateParams, $mdSidenav, generalFunc, API){
+    		super(generalFunc, API);
 
     		this.idProject = $stateParams.projectId;
     		this.mdSidenav = $mdSidenav;
@@ -26,7 +26,7 @@ module ToDoApp.Project {
     			this.panelHeader = "Create new project";
     		} else {
     			this.panelHeader = "Edit project";
-    			this.fetchProject(this.idProject, (data)=>{
+    			this.api.fetchProject(this.idProject, (data)=>{
     				this.nameProject = data.Project.title;
     			})
 
@@ -36,12 +36,12 @@ module ToDoApp.Project {
     	public saveProject(){
     		if (this.nameProject && this.nameProject != "" && this.nameProject.charCodeAt() != 127) {
     			if (this.idProject == 0) {
-	    			this.addProject({session: "", Project: {title: this.nameProject}}, () => {
+	    			this.api.addProject({session: "", Project: {title: this.nameProject}}, () => {
 	    				localStorage.setItem("reloadProject", "true");
 	    				this.close();	
 	    			});
 	    		} else {
-	    			this.editProject({session: "", Project: {id: this.idProject, title: this.nameProject}}, () => {
+	    			this.api.editProject({session: "", Project: {id: this.idProject, title: this.nameProject}}, () => {
 	    				localStorage.setItem("reloadProject", "true");
 	    				this.close();
 	    			});
@@ -49,9 +49,6 @@ module ToDoApp.Project {
     		}    		
     	}
 
-    	public close() {
-    		this.mdSidenav('rightPanel').close()
-    	}
     }
 
     project.controller("project", Project);
