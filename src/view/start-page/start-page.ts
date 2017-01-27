@@ -68,7 +68,6 @@ module ToDoApp.StartPage {
         this.offset = 0;
         if (taskCount > 20) {
           this.offset = taskCount - 20;
-          // this.paginator();
         }  
         this.api.getProjectTasks(this.currentProjectId, this.offset, (data: any) => {
             if (!document.querySelector(".item-project .active")) {
@@ -78,31 +77,6 @@ module ToDoApp.StartPage {
             this.taskList(data);
         });
       }
-
-        // public paginator(){
-        //   clearTimeout(this.timerId);
-        //   var timer = this.timerId;
-        //   this.timerId = setTimeout(function tick() {
-        //     let lastBlock = document.querySelector(".task-conteiner .task:last-child md-card-content:last-child");
-        //     let coord = lastBlock.getBoundingClientRect();
-        //     let documentHeight = document.documentElement.clientHeight;
-        //     let r = documentHeight - coord.top;
-        //     if (r > 0 && r < 450) {
-        //       // загрузить партию
-        //       this.offset-= 20;
-        //       this.getProjectTasks(this.currentProjectId, this.offset, (data: any) => {
-        //         this.taskList(data);
-        //         if (this.offset < 0) {
-        //           clearTimeout(this.timerId);
-        //         } else {
-        //           this.timerId = setTimeout(tick, 1000);
-        //         }
-        //       });
-        //     } else {
-        //       this.timerId = setTimeout(tick, 1000);
-        //     }
-        //   }, 1000);
-        // }
 
       public setActive(){
           let oldEl = document.querySelector(".item-project .active");
@@ -275,6 +249,19 @@ module ToDoApp.StartPage {
       public goToSearch() {
         let inp = document.querySelector(".search-task");
         inp.focus();
+      }
+
+      public scrollTasks(){
+        let scrollable = document.querySelector(".task-conteiner");
+        let endPos = scrollable.scrollHeight - scrollable.clientHeight - scrollable.scrollTop;
+        if(endPos <= 100){
+          if (this.offset > 0) {
+            this.offset -= 20;
+                this.api.getProjectTasks(this.currentProjectId, this.offset, (data: any) => {
+                this.taskList(data);
+            });
+          }
+        }
       }
     }
 

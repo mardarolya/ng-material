@@ -118,6 +118,20 @@ module ToDoApp.General {
                     });
                 }
         }
+        // scroll
+        public static ngScroll() {
+            return (scope, element, attrs) => {
+                    element.bind("scroll", function (event) {
+                        
+                            scope.$apply(function (){
+                                scope.$eval(attrs.ngScroll);
+                            });
+
+                            event.preventDefault();
+                        
+                    });
+                }
+        }
         //собираем все методы
         public static generalFunc($mdDialog: any, $mdSidenav: any) {
             return {

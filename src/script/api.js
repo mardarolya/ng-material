@@ -47,6 +47,17 @@ var ToDoApp;
                     });
                 };
             };
+            // scroll
+            generalFunc.ngScroll = function () {
+                return function (scope, element, attrs) {
+                    element.bind("scroll", function (event) {
+                        scope.$apply(function () {
+                            scope.$eval(attrs.ngScroll);
+                        });
+                        event.preventDefault();
+                    });
+                };
+            };
             //собираем все методы
             generalFunc.generalFunc = function ($mdDialog, $mdSidenav) {
                 return {

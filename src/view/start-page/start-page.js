@@ -67,30 +67,6 @@ var ToDoApp;
                     _this.taskList(data);
                 });
             };
-            // public paginator(){
-            //   clearTimeout(this.timerId);
-            //   var timer = this.timerId;
-            //   this.timerId = setTimeout(function tick() {
-            //     let lastBlock = document.querySelector(".task-conteiner .task:last-child md-card-content:last-child");
-            //     let coord = lastBlock.getBoundingClientRect();
-            //     let documentHeight = document.documentElement.clientHeight;
-            //     let r = documentHeight - coord.top;
-            //     if (r > 0 && r < 450) {
-            //       // загрузить партию
-            //       this.offset-= 20;
-            //       this.getProjectTasks(this.currentProjectId, this.offset, (data: any) => {
-            //         this.taskList(data);
-            //         if (this.offset < 0) {
-            //           clearTimeout(this.timerId);
-            //         } else {
-            //           this.timerId = setTimeout(tick, 1000);
-            //         }
-            //       });
-            //     } else {
-            //       this.timerId = setTimeout(tick, 1000);
-            //     }
-            //   }, 1000);
-            // }
             StartPage.prototype.setActive = function () {
                 var oldEl = document.querySelector(".item-project .active");
                 if (oldEl) {
@@ -256,6 +232,19 @@ var ToDoApp;
             StartPage.prototype.goToSearch = function () {
                 var inp = document.querySelector(".search-task");
                 inp.focus();
+            };
+            StartPage.prototype.scrollTasks = function () {
+                var _this = this;
+                var scrollable = document.querySelector(".task-conteiner");
+                var endPos = scrollable.scrollHeight - scrollable.clientHeight - scrollable.scrollTop;
+                if (endPos <= 100) {
+                    if (this.offset > 0) {
+                        this.offset -= 20;
+                        this.api.getProjectTasks(this.currentProjectId, this.offset, function (data) {
+                            _this.taskList(data);
+                        });
+                    }
+                }
             };
             return StartPage;
         }(ToDoApp.General.mainController));
