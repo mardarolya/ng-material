@@ -50,7 +50,7 @@ div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 				br
 				span Have a good day
 
-		div.task-conteiner(layout="column")
+		div.task-conteiner(layout="column" ng-show="c.tasks.length != 0")
 			div.task(ng-repeat = "task in c.tasks" class="task")
 				span.task-date {{task.date.display}}
 				md-card

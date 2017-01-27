@@ -41,25 +41,12 @@ module ToDoApp.StartPage {
             this.getProj();
           });
         });
-           
-        // $scope.$watch(
-        //   () => {return this.mdSidenav("rightPanel").isOpen()},
-        //   (newValue, oldValue) => {
-        //     if (oldValue == true && newValue == false) {
-        //         let reloadProject = localStorage.getItem("reloadProject");
-        //         if (reloadProject && reloadProject == "true") {
-        //             this.getProj();
-        //             localStorage.removeItem("reloadProject");
-        //         }
-        //     }
-        // });
     	}
 
       public getProj(){
         this.api.getProgects(
           (data: any) => {
             this.projects = data.projects;
-            console.log(this.projects);
             if (this.currentProjectId == 0) {
               this.currentProjectId = this.projects[0].Project.id;
             };
@@ -204,22 +191,46 @@ module ToDoApp.StartPage {
       
       public openForAddProject(){
         this.open();
-        this.state.go("StartPage.Project", { projectId: 0 }, {reload : "StartPage.Project"});
+        var success = (id) => {
+          this.currentProjectId = id;
+          this.getProj();
+        };
+        this.state.go("StartPage.Project", { projectId: 0, success: success}, {reload : "StartPage.Project"});
       }
 
       public openForEditProject(){
         this.open();
-        this.state.go("StartPage.Project", { projectId: this.currentProjectId }, {reload : "StartPage.Project"});
+        var success = () => {
+          this.getProj();
+        };
+        this.state.go("StartPage.Project", { projectId: this.currentProjectId, success: success }, {reload : "StartPage.Project"});
       }
 
       public openForAddTask(){
         this.open();
-        this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" }, {reload : "StartPage.Task"});
+        var success = () => {
+          for (let i = 0, max = this.projects.length; i < max; i ++) {
+            if (this.projects[i].Project.id == this.currentProjectId) {
+              this.projects[i].Project.task_count = (parseInt(this.projects[i].Project.task_count) + 1).toString();
+              break;
+            }
+          }
+          this.getTasks(this.currentProjectId);
+        };
+        this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add", success: success }, {reload : "StartPage.Task"});
       }
 
       public openForShowTask(idTask: number){
         this.open();
-        this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" }, {reload : "StartPage.Task"});
+        var success = (action: string) => {
+          if (action == "del") {
+            this.getProj();
+          }
+          if (action == "edit") {
+            this.getTasks(this.currentProjectId);
+          }
+        };
+        this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show", success: success }, {reload : "StartPage.Task"});
       }
 
       public taskDone(idTask: number){
@@ -268,17 +279,4 @@ module ToDoApp.StartPage {
     }
 
     startPage.controller("startPage", StartPage);
-    //          .directive('ngEsc', function () {
-    //             return (scope, element, attrs) => {
-    //                 element.bind("keydown keypress keyup", function (event) {
-    //                     if(event.which === 27) {
-    //                         scope.$apply(function (){
-    //                             scope.$eval(attrs.ngEsc);
-    //                         });
-
-    //                         event.preventDefault();
-    //                     }
-    //                 });
-    //           };
-    // });
 }

@@ -31,23 +31,11 @@ var ToDoApp;
                     });
                 });
                 return _this;
-                // $scope.$watch(
-                //   () => {return this.mdSidenav("rightPanel").isOpen()},
-                //   (newValue, oldValue) => {
-                //     if (oldValue == true && newValue == false) {
-                //         let reloadProject = localStorage.getItem("reloadProject");
-                //         if (reloadProject && reloadProject == "true") {
-                //             this.getProj();
-                //             localStorage.removeItem("reloadProject");
-                //         }
-                //     }
-                // });
             }
             StartPage.prototype.getProj = function () {
                 var _this = this;
                 this.api.getProgects(function (data) {
                     _this.projects = data.projects;
-                    console.log(_this.projects);
                     if (_this.currentProjectId == 0) {
                         _this.currentProjectId = _this.projects[0].Project.id;
                     }
@@ -185,20 +173,48 @@ var ToDoApp;
                 });
             };
             StartPage.prototype.openForAddProject = function () {
+                var _this = this;
                 this.open();
-                this.state.go("StartPage.Project", { projectId: 0 }, { reload: "StartPage.Project" });
+                var success = function (id) {
+                    _this.currentProjectId = id;
+                    _this.getProj();
+                };
+                this.state.go("StartPage.Project", { projectId: 0, success: success }, { reload: "StartPage.Project" });
             };
             StartPage.prototype.openForEditProject = function () {
+                var _this = this;
                 this.open();
-                this.state.go("StartPage.Project", { projectId: this.currentProjectId }, { reload: "StartPage.Project" });
+                var success = function () {
+                    _this.getProj();
+                };
+                this.state.go("StartPage.Project", { projectId: this.currentProjectId, success: success }, { reload: "StartPage.Project" });
             };
             StartPage.prototype.openForAddTask = function () {
+                var _this = this;
                 this.open();
-                this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" }, { reload: "StartPage.Task" });
+                var success = function () {
+                    for (var i = 0, max = _this.projects.length; i < max; i++) {
+                        if (_this.projects[i].Project.id == _this.currentProjectId) {
+                            _this.projects[i].Project.task_count = (parseInt(_this.projects[i].Project.task_count) + 1).toString();
+                            break;
+                        }
+                    }
+                    _this.getTasks(_this.currentProjectId);
+                };
+                this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add", success: success }, { reload: "StartPage.Task" });
             };
             StartPage.prototype.openForShowTask = function (idTask) {
+                var _this = this;
                 this.open();
-                this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" }, { reload: "StartPage.Task" });
+                var success = function (action) {
+                    if (action == "del") {
+                        _this.getProj();
+                    }
+                    if (action == "edit") {
+                        _this.getTasks(_this.currentProjectId);
+                    }
+                };
+                this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show", success: success }, { reload: "StartPage.Task" });
             };
             StartPage.prototype.taskDone = function (idTask) {
                 var _this = this;
@@ -244,17 +260,5 @@ var ToDoApp;
             return StartPage;
         }(ToDoApp.General.mainController));
         startPage.controller("startPage", StartPage);
-        //          .directive('ngEsc', function () {
-        //             return (scope, element, attrs) => {
-        //                 element.bind("keydown keypress keyup", function (event) {
-        //                     if(event.which === 27) {
-        //                         scope.$apply(function (){
-        //                             scope.$eval(attrs.ngEsc);
-        //                         });
-        //                         event.preventDefault();
-        //                     }
-        //                 });
-        //           };
-        // });
     })(StartPage = ToDoApp.StartPage || (ToDoApp.StartPage = {}));
 })(ToDoApp || (ToDoApp = {}));

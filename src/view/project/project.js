@@ -16,6 +16,7 @@ var ToDoApp;
                 var _this = _super.call(this, generalFunc, API) || this;
                 _this.idProject = $stateParams.projectId;
                 _this.mdSidenav = $mdSidenav;
+                _this.success = $state.params.success;
                 _this.state = $state;
                 if (_this.idProject == 0) {
                     _this.panelHeader = "Create new project";
@@ -32,14 +33,14 @@ var ToDoApp;
                 var _this = this;
                 if (this.nameProject && this.nameProject != "" && this.nameProject.charCodeAt() != 127) {
                     if (this.idProject == 0) {
-                        this.api.addProject({ session: "", Project: { title: this.nameProject } }, function () {
-                            localStorage.setItem("reloadProject", "true");
+                        this.api.addProject({ session: "", Project: { title: this.nameProject } }, function (data) {
+                            _this.success(data.Project.id);
                             _this.close();
                         });
                     }
                     else {
                         this.api.editProject({ session: "", Project: { id: this.idProject, title: this.nameProject } }, function () {
-                            localStorage.setItem("reloadProject", "true");
+                            _this.success();
                             _this.close();
                         });
                     }

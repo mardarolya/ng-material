@@ -17,17 +17,16 @@ module ToDoApp.Task {
 
 		private idTask: number;
 		private idProject: number;
-		private mdDialog: any;
+        private success: (action?: string) => {});
+
 
     	constructor($state, $stateParams, generalFunc, API){
     		super(generalFunc, API);
 
-    		// this.mdSidenav = $mdSidenav;
-
     		this.isShowTask = $stateParams.state == "Show";
     		this.idTask = $stateParams.taskId;
     		this.idProject = $stateParams.projectId;
-    		// this.mdDialog = $mdDialog; 
+            this.success = $state.params.success;
 
     		if (this.idTask == 0) {
     			this.panelHeader = "Create new task";    			
@@ -51,12 +50,12 @@ module ToDoApp.Task {
     		if (this.taskName && this.taskName != "" && this.taskName.charCodeAt() != 127) {
     			if (this.idTask == 0) {
 	    			this.api.addTask({session: "", Project: {id: this.idProject}, Task: {title: this.taskName, description: this.taskDescription}}, () => {
-	    				localStorage.setItem("reloadProject", "true");
+	    				this.success();
 	    				this.close();	
 	    			});
 	    		} else {
 	    			this.api.editTask({session: "",  Project: {id: this.idProject}, Task: {id: this.idTask, title: this.taskName, description: this.taskDescription}}, () => {
-	    				localStorage.setItem("reloadProject", "true");
+	    				this.success("edit");
 	    				this.close();
 	    			});
 	    		}	
@@ -66,7 +65,7 @@ module ToDoApp.Task {
     	public dlTask(ev) {
             this.func.showConfirm({event: ev, title: "Would you like to delete this task?", okButton: "Delete"}, () => {
 	    			this.api.deleteTask(this.idTask, () => {
-	    			localStorage.setItem("reloadProject", "true");
+	    			this.success("del");
 	    			this.close();
     			})
     		})

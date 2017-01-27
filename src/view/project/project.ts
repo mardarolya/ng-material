@@ -14,12 +14,14 @@ module ToDoApp.Project {
 		private idProject: number;
 		private mdSidenav: any;
 		private state: any;
+        private success: ((id?: any) => {});
 
     	constructor($state, $stateParams, $mdSidenav, generalFunc, API){
     		super(generalFunc, API);
 
     		this.idProject = $stateParams.projectId;
     		this.mdSidenav = $mdSidenav;
+            this.success = $state.params.success;
     		this.state = $state;
 
     		if (this.idProject == 0) {
@@ -36,13 +38,13 @@ module ToDoApp.Project {
     	public saveProject(){
     		if (this.nameProject && this.nameProject != "" && this.nameProject.charCodeAt() != 127) {
     			if (this.idProject == 0) {
-	    			this.api.addProject({session: "", Project: {title: this.nameProject}}, () => {
-	    				localStorage.setItem("reloadProject", "true");
+	    			this.api.addProject({session: "", Project: {title: this.nameProject}}, (data: any) => {
+                        this.success(data.Project.id);
 	    				this.close();	
 	    			});
 	    		} else {
 	    			this.api.editProject({session: "", Project: {id: this.idProject, title: this.nameProject}}, () => {
-	    				localStorage.setItem("reloadProject", "true");
+	    				this.success();
 	    				this.close();
 	    			});
 	    		}	

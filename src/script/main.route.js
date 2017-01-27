@@ -19,13 +19,15 @@ var ToDoApp;
             url: "/Project?:projectId",
             templateUrl: "view/project/project.html",
             controller: "project",
-            controllerAs: "c"
+            controllerAs: "c",
+            params: { success: function () { } }
         })
             .state('StartPage.Task', {
             url: "/Task?:taskId:projectId:state",
             templateUrl: "view/task/task.html",
             controller: "task",
-            controllerAs: "c"
+            controllerAs: "c",
+            params: { success: function () { } }
         });
         $urlRouterProvider.otherwise('/StartPage');
     })

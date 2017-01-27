@@ -174,7 +174,7 @@ var ToDoApp;
                 body.session = apiFunc.getCookie("mySession");
                 $http.post(this.way + "/projects/project", body)
                     .then(function (data) {
-                    success();
+                    success(data.data);
                 }, function (error) {
                     console.log(error);
                 });

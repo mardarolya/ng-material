@@ -14,11 +14,10 @@ var ToDoApp;
             __extends(Task, _super);
             function Task($state, $stateParams, generalFunc, API) {
                 var _this = _super.call(this, generalFunc, API) || this;
-                // this.mdSidenav = $mdSidenav;
                 _this.isShowTask = $stateParams.state == "Show";
                 _this.idTask = $stateParams.taskId;
                 _this.idProject = $stateParams.projectId;
-                // this.mdDialog = $mdDialog; 
+                _this.success = $state.params.success;
                 if (_this.idTask == 0) {
                     _this.panelHeader = "Create new task";
                 }
@@ -32,6 +31,7 @@ var ToDoApp;
                 }
                 return _this;
             }
+            ;
             Task.prototype.goToEditTask = function () {
                 this.isShowTask = false;
                 this.panelHeader = "Edit task";
@@ -41,13 +41,13 @@ var ToDoApp;
                 if (this.taskName && this.taskName != "" && this.taskName.charCodeAt() != 127) {
                     if (this.idTask == 0) {
                         this.api.addTask({ session: "", Project: { id: this.idProject }, Task: { title: this.taskName, description: this.taskDescription } }, function () {
-                            localStorage.setItem("reloadProject", "true");
+                            _this.success();
                             _this.close();
                         });
                     }
                     else {
                         this.api.editTask({ session: "", Project: { id: this.idProject }, Task: { id: this.idTask, title: this.taskName, description: this.taskDescription } }, function () {
-                            localStorage.setItem("reloadProject", "true");
+                            _this.success("edit");
                             _this.close();
                         });
                     }
@@ -57,7 +57,7 @@ var ToDoApp;
                 var _this = this;
                 this.func.showConfirm({ event: ev, title: "Would you like to delete this task?", okButton: "Delete" }, function () {
                     _this.api.deleteTask(_this.idTask, function () {
-                        localStorage.setItem("reloadProject", "true");
+                        _this.success("del");
                         _this.close();
                     });
                 });

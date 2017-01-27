@@ -252,11 +252,11 @@ module ToDoApp.General {
                     });  
         }
         // добавить проект
-        private static addProject($http, body: addProject, success: (() => void)){
+        private static addProject($http, body: addProject, success: ((data) => void)){
         	body.session = apiFunc.getCookie("mySession");
         	$http.post(this.way + "/projects/project", body)
                     .then((data: any) => {
-                        success();
+                        success(data.data);
                     },
                     (error: any) => {
                         console.log(error);
@@ -359,7 +359,7 @@ module ToDoApp.General {
                 fetchProject(idProject: number, success: ((data) => void)) {
                     apiFunc.fetchProject($http, idProject, success);
                 },
-                addProject(body: addProject, success: (() => void)) {
+                addProject(body: addProject, success: ((data) => void)) {
                     apiFunc.addProject($http, body, success);
                 },
                 editProject(body: editProject, success: (() => void)) {
