@@ -13,7 +13,6 @@ module ToDoApp.StartPage {
         public currentProjectId: number;
         public tasks: any;
         public loaded: boolean;
-        public mdSidenav: any;
         public searchTask: string;
         public showSearch: boolean;
         private state: any;
@@ -21,6 +20,7 @@ module ToDoApp.StartPage {
         private timeout: any;
         public offset: number=0;
         private timerId: any;
+        private showSearchTask: boolean;
 
     	constructor($state, $scope, generalFunc, API){
         super(generalFunc, API);
@@ -32,6 +32,7 @@ module ToDoApp.StartPage {
         this.state = $state;
         this.searchTask = "";
         this.showSearch = true;
+        this.showSearchTask = false;
 
         this.api.isSessionAlive(() => {
           this.api.getUserInfo((data: any) => {
@@ -247,8 +248,33 @@ module ToDoApp.StartPage {
       }
 
       public goToSearch() {
+        if (this.showSearchTask == false) {
+          this.showSearchTask = true;  
+        }
+
+        setTimeout(() => {
+          this.setFocus();
+        }, 300);
+      }
+
+      public setFocus() {
         let inp = document.querySelector(".search-task");
-        inp.focus();
+        if (inp != document.activeElement) {
+          inp.focus();
+        }
+      }
+
+      public blurSearchTask() {
+        if (this.searchTask == "" || this.searchTask.charCodeAt() == 127) {
+          this.showSearchTask = false; 
+        }
+        this.searchTaskByName();
+      }
+
+      public cleanSearch() {
+        this.searchTask = "";
+        this.setFocus();
+        this.searchTaskByName();
       }
 
       public scrollTasks(){
@@ -257,11 +283,30 @@ module ToDoApp.StartPage {
         if(endPos <= 100){
           if (this.offset > 0) {
             this.offset -= 20;
-                this.api.getProjectTasks(this.currentProjectId, this.offset, (data: any) => {
+            let search = "";
+            if (this.showSearchTask && this.searchTask != "" && this.searchTask.charCodeAt() != 127) {
+              search = this.searchTask;
+            }
+            this.api.getProjectTasks(this.currentProjectId, this.offset, (data: any) => {
                 this.taskList(data);
-            });
+            }, search);
           }
         }
+      }
+
+      public searchTaskByName(){
+        setTimeout(() => {
+          if (this.showSearchTask && this.searchTask != "" && this.searchTask.charCodeAt() != 127) {
+               this.offset = 0;
+               this.api.getProjectTasks(this.currentProjectId, this.offset, 
+                (data: any) => {
+                  this.tasks = [];
+                  this.taskList(data);
+                }, this.searchTask);
+          } else {
+            this.getTasks(this.currentProjectId);
+          }
+        }, 1000);
       }
     }
 

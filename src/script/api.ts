@@ -236,16 +236,24 @@ module ToDoApp.General {
                     });  
         }
         // получить таски проекта
-        private static getProjectTasks($http, idProject: number, offset: number, success: ((data: any) => void)) {
+        private static getProjectTasks($http, idProject: number, offset: number, success: ((data: any) => void), search?: string) {
         	let pageSize = 20;
             if (offset < 0) {
               pageSize = offset + 20;
               offset = 0;  
             }
             let session = apiFunc.getCookie("mySession");
-            $http.get(this.way + '/tasks?session=' + session 
-        		                   + '&project_id=' + idProject 
-        		                   + '&paging_size='+ pageSize +'&paging_offset=' + offset)
+            let searchText = "";
+            let fullWay = this.way + '/tasks?session=' + session 
+                                   + '&project_id=' + idProject 
+                                   + '&paging_size='+ pageSize +'&paging_offset=' + offset;
+
+            if (search && search != "") {
+                let searchText = "&condition_keywords="+search;
+                fullWay = fullWay + searchText;
+            }
+
+            $http.get(fullWay)
             .then((data: any) => {
             	success(data.data);
             },
@@ -367,8 +375,8 @@ module ToDoApp.General {
                 getProgects(success: ((data: any) => void)) {
                     apiFunc.getProgects($http, success);
                 },
-                getProjectTasks(idProject: number, offset: number, success: ((data: any) => void)) {
-                    apiFunc.getProjectTasks($http, idProject, offset, success);
+                getProjectTasks(idProject: number, offset: number, success: ((data: any) => void), search?: string) {
+                    apiFunc.getProjectTasks($http, idProject, offset, success, search);
                 },
                 fetchProject(idProject: number, success: ((data) => void)) {
                     apiFunc.fetchProject($http, idProject, success);

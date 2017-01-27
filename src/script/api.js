@@ -154,16 +154,22 @@ var ToDoApp;
                 });
             };
             // получить таски проекта
-            apiFunc.getProjectTasks = function ($http, idProject, offset, success) {
+            apiFunc.getProjectTasks = function ($http, idProject, offset, success, search) {
                 var pageSize = 20;
                 if (offset < 0) {
                     pageSize = offset + 20;
                     offset = 0;
                 }
                 var session = apiFunc.getCookie("mySession");
-                $http.get(this.way + '/tasks?session=' + session
+                var searchText = "";
+                var fullWay = this.way + '/tasks?session=' + session
                     + '&project_id=' + idProject
-                    + '&paging_size=' + pageSize + '&paging_offset=' + offset)
+                    + '&paging_size=' + pageSize + '&paging_offset=' + offset;
+                if (search && search != "") {
+                    var searchText_1 = "&condition_keywords=" + search;
+                    fullWay = fullWay + searchText_1;
+                }
+                $http.get(fullWay)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
@@ -272,8 +278,8 @@ var ToDoApp;
                     getProgects: function (success) {
                         apiFunc.getProgects($http, success);
                     },
-                    getProjectTasks: function (idProject, offset, success) {
-                        apiFunc.getProjectTasks($http, idProject, offset, success);
+                    getProjectTasks: function (idProject, offset, success, search) {
+                        apiFunc.getProjectTasks($http, idProject, offset, success, search);
                     },
                     fetchProject: function (idProject, success) {
                         apiFunc.fetchProject($http, idProject, success);

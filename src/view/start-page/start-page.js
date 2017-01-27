@@ -22,6 +22,7 @@ var ToDoApp;
                 _this.state = $state;
                 _this.searchTask = "";
                 _this.showSearch = true;
+                _this.showSearchTask = false;
                 _this.api.isSessionAlive(function () {
                     _this.api.getUserInfo(function (data) {
                         _this.currentUser = data.Account.username;
@@ -230,8 +231,30 @@ var ToDoApp;
                 });
             };
             StartPage.prototype.goToSearch = function () {
+                var _this = this;
+                if (this.showSearchTask == false) {
+                    this.showSearchTask = true;
+                }
+                setTimeout(function () {
+                    _this.setFocus();
+                }, 300);
+            };
+            StartPage.prototype.setFocus = function () {
                 var inp = document.querySelector(".search-task");
-                inp.focus();
+                if (inp != document.activeElement) {
+                    inp.focus();
+                }
+            };
+            StartPage.prototype.blurSearchTask = function () {
+                if (this.searchTask == "" || this.searchTask.charCodeAt() == 127) {
+                    this.showSearchTask = false;
+                }
+                this.searchTaskByName();
+            };
+            StartPage.prototype.cleanSearch = function () {
+                this.searchTask = "";
+                this.setFocus();
+                this.searchTaskByName();
             };
             StartPage.prototype.scrollTasks = function () {
                 var _this = this;
@@ -240,11 +263,30 @@ var ToDoApp;
                 if (endPos <= 100) {
                     if (this.offset > 0) {
                         this.offset -= 20;
+                        var search = "";
+                        if (this.showSearchTask && this.searchTask != "" && this.searchTask.charCodeAt() != 127) {
+                            search = this.searchTask;
+                        }
                         this.api.getProjectTasks(this.currentProjectId, this.offset, function (data) {
                             _this.taskList(data);
-                        });
+                        }, search);
                     }
                 }
+            };
+            StartPage.prototype.searchTaskByName = function () {
+                var _this = this;
+                setTimeout(function () {
+                    if (_this.showSearchTask && _this.searchTask != "" && _this.searchTask.charCodeAt() != 127) {
+                        _this.offset = 0;
+                        _this.api.getProjectTasks(_this.currentProjectId, _this.offset, function (data) {
+                            _this.tasks = [];
+                            _this.taskList(data);
+                        }, _this.searchTask);
+                    }
+                    else {
+                        _this.getTasks(_this.currentProjectId);
+                    }
+                }, 1000);
             };
             return StartPage;
         }(ToDoApp.General.mainController));

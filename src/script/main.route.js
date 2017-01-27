@@ -35,5 +35,4 @@ var ToDoApp;
         .service("API", ["$http", ToDoApp.General.apiFunc.apiFunc])
         .directive('ngEsc', ToDoApp.General.generalFunc.ngEsc)
         .directive('ngScroll', ToDoApp.General.generalFunc.ngScroll);
-    ;
 })(ToDoApp || (ToDoApp = {}));

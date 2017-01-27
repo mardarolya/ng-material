@@ -37,5 +37,5 @@ module ToDoApp {
 		.service("generalFunc", ["$mdDialog", "$mdSidenav", ToDoApp.General.generalFunc.generalFunc])
 		.service("API", ["$http", ToDoApp.General.apiFunc.apiFunc])
 		.directive('ngEsc', ToDoApp.General.generalFunc.ngEsc)
-		.directive('ngScroll', ToDoApp.General.generalFunc.ngScroll);;
+		.directive('ngScroll', ToDoApp.General.generalFunc.ngScroll);
 }

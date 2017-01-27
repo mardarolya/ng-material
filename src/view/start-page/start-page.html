@@ -20,9 +20,9 @@
   <md-content flex="flex"> 
     <div class="header clearfix">		
       <md-button aria-label="Search" ng-click="c.goToSearch()" class="button-search"><i class="icons8-search"></i></md-button>
-      <md-input-container md-no-float="" class="search">
-        <input aria-label="Search task" ng-model="c.searchTask" placeholder="Write to search" class="search-task"/>
-        <md-button aria-label="Clean" ng-click="c.searchTask = ''" ng-show="c.searchTask != ''" class="clean-search icons8-delete-2"></md-button>
+      <md-input-container md-no-float="" ng-show="c.showSearchTask" class="search">
+        <input aria-label="Search task" ng-model="c.searchTask" placeholder="Write to search" ng-blur="c.blurSearchTask()" ng-change="c.searchTaskByName()" class="search-task"/>
+        <md-button aria-label="Clean" ng-click="c.cleanSearch()" ng-show="c.searchTask != ''" class="clean-search icons8-delete-2"></md-button>
       </md-input-container>
       <md-menu md-position-mode="target-right target" class="button-more">
         <md-button aria-label="Work with Project" ng-click="$mdOpenMenu($event)" class="icons8-more"></md-button>
@@ -41,7 +41,7 @@
     <div layout="column" ng-show="c.tasks.length != 0" ng-scroll="c.scrollTasks()" class="task-conteiner">
       <div ng-repeat="task in c.tasks" class="task task"><span class="task-date">{{task.date.display}}</span>
         <md-card>
-          <md-card-content ng-repeat="name in task.names | filter: c.searchTask">
+          <md-card-content ng-repeat="name in task.names">
             <md-radio-group>
               <md-radio-button value="false" ng-click="c.taskDone(name.id)" aria-label="Task" class="md-primary"></md-radio-button>
             </md-radio-group>

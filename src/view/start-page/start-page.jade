@@ -31,9 +31,9 @@ div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 			md-button.button-search(aria-label="Search" ng-click="c.goToSearch()")
 				i.icons8-search
 			
-			md-input-container.search(md-no-float="")
-				input.search-task(aria-label="Search task" ng-model="c.searchTask" placeholder="Write to search")
-				md-button.clean-search.icons8-delete-2(aria-label="Clean" ng-click="c.searchTask = ''" ng-show="c.searchTask != ''")
+			md-input-container.search(md-no-float="" ng-show="c.showSearchTask")
+				input.search-task(aria-label="Search task" ng-model="c.searchTask" placeholder="Write to search" ng-blur="c.blurSearchTask()" ng-change="c.searchTaskByName()" )
+				md-button.clean-search.icons8-delete-2(aria-label="Clean" ng-click="c.cleanSearch()" ng-show="c.searchTask != ''")
 
 			md-menu.button-more(md-position-mode="target-right target")
 				md-button.icons8-more(aria-label="Work with Project" ng-click="$mdOpenMenu($event)")
@@ -54,7 +54,7 @@ div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 			div.task(ng-repeat = "task in c.tasks" class="task")
 				span.task-date {{task.date.display}}
 				md-card
-					md-card-content(ng-repeat = "name in task.names | filter: c.searchTask")
+					md-card-content(ng-repeat = "name in task.names")
 						md-radio-group
 							md-radio-button.md-primary(value="false" ng-click="c.taskDone(name.id)" aria-label="Task")
 						div.task-name(ng-click="c.openForShowTask(name.id)") 
