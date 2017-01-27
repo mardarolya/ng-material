@@ -415,12 +415,9 @@ md-backdrop.md-sidenav-backdrop {
 md-input-container:not(.md-input-invalid).md-input-has-value label {
   color: #f6f6f6;
 }
-.overview {
-  width: 100%;
+.mCustomScrollBox {
+  overflow: visible;
 }
-.scroll-bar {
-  background-color: #6b6b99;
-}
-.scroll-bar .thumb {
-  background-color: white;
+.mCustomScrollBox .mCSB_scrollTools {
+  right: -20px;
 }

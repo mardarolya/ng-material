@@ -43,6 +43,7 @@ var ToDoApp;
                     ;
                     _this.loaded = true;
                     _this.getTasks(_this.currentProjectId);
+                    $(".conteiner-projects").mCustomScrollbar({ theme: "mimimal", scrollEasing: "easeOut" });
                 });
             };
             StartPage.prototype.getTasks = function (projectID) {
@@ -176,6 +177,7 @@ var ToDoApp;
                             break;
                         }
                     }
+                    $(".conteiner-projects").mCustomScrollbar("update");
                     _this.getTasks(_this.currentProjectId);
                 };
                 this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add", success: success }, { reload: "StartPage.Task" });
@@ -189,6 +191,7 @@ var ToDoApp;
                     }
                     if (action == "edit") {
                         _this.getTasks(_this.currentProjectId);
+                        $(".conteiner-projects").mCustomScrollbar("update");
                     }
                 };
                 this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show", success: success }, { reload: "StartPage.Task" });
@@ -202,6 +205,7 @@ var ToDoApp;
                                 _this.tasks[i].names.splice(j, 1);
                                 if (_this.tasks[i].names.length == 0) {
                                     _this.tasks.splice(i, 1);
+                                    $(".conteiner-projects").mCustomScrollbar("update");
                                 }
                                 break outer;
                             }
@@ -227,6 +231,7 @@ var ToDoApp;
                             }
                         }
                         _this.getTasks(_this.currentProjectId);
+                        $(".conteiner-projects").mCustomScrollbar("update");
                     });
                 });
             };

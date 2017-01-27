@@ -65,7 +65,7 @@ module ToDoApp.General {
         isSessionAlive(success: (() => void)) : void,
         getUserInfo(success: ((data: any) => void)) : void,
         getProgects(success: ((data: any) => void)) : void,
-        getProjectTasks(idProject: number, offset: number, success: ((data: any) => void)) : void,
+        getProjectTasks(idProject: number, offset: number, success: ((data: any) => void), search?: string) : void,
         fetchProject(idProject: number, success: ((data) => void)) : void,
         addProject(body: addProject, success: (() => void)) : void,
         editProject(body: editProject, success: (() => void)) : void,
