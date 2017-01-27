@@ -65,6 +65,9 @@ var ToDoApp;
                     if (!document.querySelector(".item-project .active")) {
                         _this.setActive();
                     }
+                    if (document.documentElement.clientWidth < 960) {
+                        _this.close("leftPanel");
+                    }
                     _this.tasks = [];
                     _this.taskList(data);
                 });
@@ -292,6 +295,9 @@ var ToDoApp;
                         _this.getTasks(_this.currentProjectId);
                     }
                 }, 1000);
+            };
+            StartPage.prototype.showProjectList = function () {
+                return (document.documentElement.clientWidth < 960);
             };
             return StartPage;
         }(ToDoApp.General.mainController));

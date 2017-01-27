@@ -70,11 +70,14 @@ module ToDoApp.StartPage {
         this.offset = 0;
         if (taskCount > 20) {
           this.offset = taskCount - 20;
-        }  
+        } 
         this.api.getProjectTasks(this.currentProjectId, this.offset, (data: any) => {
             if (!document.querySelector(".item-project .active")) {
                 this.setActive();
             }
+            if (document.documentElement.clientWidth < 960) {
+              this.close("leftPanel");
+            } 
             this.tasks = [];
             this.taskList(data);
         });
@@ -312,6 +315,10 @@ module ToDoApp.StartPage {
             this.getTasks(this.currentProjectId);
           }
         }, 1000);
+      }
+
+      public showProjectList(){
+        return (document.documentElement.clientWidth < 960)
       }
     }
 

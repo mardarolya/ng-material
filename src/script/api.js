@@ -320,11 +320,11 @@ var ToDoApp;
                 this.func = generalFunc;
                 this.api = API;
             }
-            mainController.prototype.close = function () {
-                this.func.close();
+            mainController.prototype.close = function (namePanel) {
+                (namePanel) ? this.func.close(namePanel) : this.func.close();
             };
-            mainController.prototype.open = function () {
-                this.func.open();
+            mainController.prototype.open = function (namePanel) {
+                (namePanel) ? this.func.open(namePanel) : this.func.open();
             };
             return mainController;
         }());

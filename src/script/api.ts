@@ -419,12 +419,12 @@ module ToDoApp.General {
             this.api = API;
         }
 
-        public close() {
-            this.func.close();
+        public close(namePanel?:string) {
+            (namePanel)? this.func.close(namePanel) : this.func.close();
         }
 
-        public open() {
-            this.func.open();
+        public open(namePanel?:string) {
+            (namePanel)? this.func.open(namePanel) : this.func.open();
         }
 
     }

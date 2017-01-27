@@ -2,7 +2,7 @@
 md-progress-linear(md-mode="indeterminate" ng-show="!c.loaded")
 
 div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
-	md-sidenav.dark-background(md-is-locked-open="true")
+	md-sidenav.dark-background(md-is-locked-open="$mdMedia('gt-sm')" md-component-id="leftPanel")
 		div.conteiner-sidebar(layout="column")
 			md-list-item.user
 				span.with-frame
@@ -38,6 +38,8 @@ div.conteiner(layout="row" ng-show="c.loaded" ng-esc="c.close()")
 			md-menu.button-more(md-position-mode="target-right target")
 				md-button.icons8-more(aria-label="Work with Project" ng-click="$mdOpenMenu($event)")
 				md-menu-content(width="4")
+					md-menu-item(ng-show = "c.showProjectList()")
+						md-button(aria-label="Project list" ng-click="c.open('leftPanel')") Project list 
 					md-menu-item
 						md-button(aria-label="Edit project" ng-click="c.openForEditProject()") Edit project
 					md-menu-item

@@ -1,7 +1,7 @@
 
 <md-progress-linear md-mode="indeterminate" ng-show="!c.loaded"></md-progress-linear>
 <div layout="row" ng-show="c.loaded" ng-esc="c.close()" class="conteiner">
-  <md-sidenav md-is-locked-open="true" class="dark-background">
+  <md-sidenav md-is-locked-open="$mdMedia('gt-sm')" md-component-id="leftPanel" class="dark-background">
     <div layout="column" class="conteiner-sidebar">
       <md-list-item class="user"><span class="with-frame"><img ng-src="image/TrevorReyes.jpg" width="50" height="50" class="md-avatar"/></span><span class="name-user">{{c.currentUser}}</span></md-list-item>
       <div class="projects full-width"><span class="to-left">Projects</span>
@@ -27,6 +27,9 @@
       <md-menu md-position-mode="target-right target" class="button-more">
         <md-button aria-label="Work with Project" ng-click="$mdOpenMenu($event)" class="icons8-more"></md-button>
         <md-menu-content width="4">
+          <md-menu-item ng-show="c.showProjectList()">
+            <md-button aria-label="Project list" ng-click="c.open('leftPanel')">Project list </md-button>
+          </md-menu-item>
           <md-menu-item>
             <md-button aria-label="Edit project" ng-click="c.openForEditProject()">Edit project</md-button>
           </md-menu-item>

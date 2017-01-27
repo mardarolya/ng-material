@@ -415,9 +415,25 @@ md-backdrop.md-sidenav-backdrop {
 md-input-container:not(.md-input-invalid).md-input-has-value label {
   color: #f6f6f6;
 }
+.mCSB_inside > .mCSB_container {
+  margin-right: 0;
+}
 .mCustomScrollBox {
   overflow: visible;
 }
 .mCustomScrollBox .mCSB_scrollTools {
   right: -20px;
+}
+md-input-container.md-default-theme:not(.md-input-focused):not(.md-input-invalid) label.md-required:after,
+md-input-container:not(.md-input-focused):not(.md-input-invalid) label.md-required:after {
+  color: white;
+}
+@media screen and (max-width: 960px) {
+  .conteiner .dark-background {
+    width: 50%;
+    z-index: 62;
+  }
+  .conteiner .dark-background.md-sidenav-right {
+    width: 50%;
+  }
 }
