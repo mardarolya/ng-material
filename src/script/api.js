@@ -13,11 +13,11 @@ var ToDoApp;
                 var mdDialog = $mdDialog;
                 var confirm = mdDialog.confirm()
                     .title(confirmParams.title)
-                    .textContent('')
+                    .textContent("")
                     .ariaLabel(confirmParams.okButton)
                     .targetEvent(confirmParams.event)
                     .ok(confirmParams.okButton)
-                    .cancel('Cancel');
+                    .cancel("Cancel");
                 return mdDialog.show(confirm).then(function () {
                     success();
                 }, function () { });
@@ -84,7 +84,7 @@ var ToDoApp;
                 var _this = this;
                 var session = apiFunc.getCookie("mySession");
                 if (session && session != "") {
-                    $http.get(this.way + '/session?session=' + session)
+                    $http.get(this.way + "/session?session=" + session)
                         .then(function (data) {
                         success();
                     }, function (error) {
@@ -97,7 +97,7 @@ var ToDoApp;
             };
             // создать сессию
             apiFunc.createSession = function ($http, success) {
-                $http.post(this.way + '/signup', { "New item": "" })
+                $http.post(this.way + "/signup", { "New item": "" })
                     .then(function (data) {
                     apiFunc.setCookie("mySession", data.data.session, null);
                     success();
@@ -107,7 +107,7 @@ var ToDoApp;
             };
             // забрать куки
             apiFunc.getCookie = function (name) {
-                var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+                var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"));
                 return matches ? decodeURIComponent(matches[1]) : undefined;
             };
             // установить куки
@@ -136,7 +136,7 @@ var ToDoApp;
             // получить информацию по пользователю
             apiFunc.getUserInfo = function ($http, success) {
                 var session = apiFunc.getCookie("mySession");
-                $http.get(this.way + '/account?session=' + session)
+                $http.get(this.way + "/account?session=" + session)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
@@ -146,7 +146,7 @@ var ToDoApp;
             // получить проекты
             apiFunc.getProgects = function ($http, success) {
                 var session = apiFunc.getCookie("mySession");
-                $http.get(this.way + '/projects?session=' + session)
+                $http.get(this.way + "/projects?session=" + session)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
@@ -162,9 +162,9 @@ var ToDoApp;
                 }
                 var session = apiFunc.getCookie("mySession");
                 var searchText = "";
-                var fullWay = this.way + '/tasks?session=' + session
-                    + '&project_id=' + idProject
-                    + '&paging_size=' + pageSize + '&paging_offset=' + offset;
+                var fullWay = this.way + "/tasks?session=" + session
+                    + "&project_id=" + idProject
+                    + "&paging_size=" + pageSize + "&paging_offset=" + offset;
                 if (search && search != "") {
                     var searchText_1 = "&condition_keywords=" + search;
                     fullWay = fullWay + searchText_1;
@@ -179,7 +179,7 @@ var ToDoApp;
             // получить информацию по проекту
             apiFunc.fetchProject = function ($http, idProject, success) {
                 var session = apiFunc.getCookie("mySession");
-                $http.get(this.way + '/projects/project?session=' + session + "&project_id=" + idProject)
+                $http.get(this.way + "/projects/project?session=" + session + "&project_id=" + idProject)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {
@@ -199,7 +199,7 @@ var ToDoApp;
             // править проект
             apiFunc.editProject = function ($http, body, success) {
                 body.session = apiFunc.getCookie("mySession");
-                $http.post(this.way + '/projects/project', body)
+                $http.post(this.way + "/projects/project", body)
                     .then(function (data) {
                     success();
                 }, function (error) {
@@ -209,7 +209,7 @@ var ToDoApp;
             // удалить проект
             apiFunc.deleteProject = function ($http, idProject, success) {
                 if (idProject != 0) {
-                    $http["delete"](this.way + '/projects/project?session=' + apiFunc.getCookie("mySession") + '&project_id=' + idProject)
+                    $http["delete"](this.way + "/projects/project?session=" + apiFunc.getCookie("mySession") + "&project_id=" + idProject)
                         .then(function () {
                         success();
                     }, function (error) {
@@ -240,7 +240,7 @@ var ToDoApp;
             // удалить таску
             apiFunc.deleteTask = function ($http, idTask, success) {
                 if (idTask != 0) {
-                    $http["delete"](this.way + '/tasks/task?session=' + apiFunc.getCookie("mySession") + '&task_id=' + idTask)
+                    $http["delete"](this.way + "/tasks/task?session=" + apiFunc.getCookie("mySession") + "&task_id=" + idTask)
                         .then(function () {
                         success();
                     }, function (error) {
@@ -260,7 +260,7 @@ var ToDoApp;
             };
             // получить информацию по таске
             apiFunc.fetchTask = function ($http, idTask, success) {
-                $http.get(this.way + '/tasks/task?session=' + apiFunc.getCookie("mySession") + "&task_id=" + idTask)
+                $http.get(this.way + "/tasks/task?session=" + apiFunc.getCookie("mySession") + "&task_id=" + idTask)
                     .then(function (data) {
                     success(data.data);
                 }, function (error) {

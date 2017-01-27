@@ -84,11 +84,11 @@ module ToDoApp.General {
             let mdDialog = $mdDialog;
             let confirm = mdDialog.confirm()
                 .title(confirmParams.title)
-                .textContent('')
+                .textContent("")
                 .ariaLabel(confirmParams.okButton)
                 .targetEvent(confirmParams.event)
                 .ok(confirmParams.okButton)
-                .cancel('Cancel');
+                .cancel("Cancel");
 
             return mdDialog.show(confirm).then(() => {
                     success();
@@ -155,7 +155,7 @@ module ToDoApp.General {
        	private static isSessionAlive($http, success: (() => void)) {
             let session = apiFunc.getCookie("mySession");
     		if (session && session != "") {
-    			$http.get(this.way + '/session?session=' + session)
+    			$http.get(this.way + "/session?session=" + session)
                     .then((data: any) => {
                         success();
                     },
@@ -168,7 +168,7 @@ module ToDoApp.General {
     	}
         // создать сессию
     	private static createSession($http, success: (() => void)) {
-    		$http.post(this.way + '/signup', {"New item":""})
+    		$http.post(this.way + "/signup", {"New item":""})
             	.then((data: any) => {
                 	apiFunc.setCookie("mySession", data.data.session, null);
                     success();
@@ -179,7 +179,7 @@ module ToDoApp.General {
     	}
         // забрать куки
     	private static getCookie(name: string) {
-            var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+            var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"));
             return matches ? decodeURIComponent(matches[1]) : undefined;
         }
         // установить куки
@@ -214,7 +214,7 @@ module ToDoApp.General {
         // получить информацию по пользователю
         private static getUserInfo($http, success: ((data: any) => void)) {
             let session = apiFunc.getCookie("mySession");
-        	$http.get(this.way + '/account?session='+session)
+        	$http.get(this.way + "/account?session="+session)
                 .then(
                     (data: any) => {
                       success(data.data);
@@ -226,7 +226,7 @@ module ToDoApp.General {
         // получить проекты
         private static getProgects($http, success: ((data: any) => void)) {
             let session = apiFunc.getCookie("mySession");
-            $http.get(this.way + '/projects?session=' + session)
+            $http.get(this.way + "/projects?session=" + session)
                 .then(
                     (data: any) => {
                     	 success(data.data);
@@ -244,9 +244,9 @@ module ToDoApp.General {
             }
             let session = apiFunc.getCookie("mySession");
             let searchText = "";
-            let fullWay = this.way + '/tasks?session=' + session 
-                                   + '&project_id=' + idProject 
-                                   + '&paging_size='+ pageSize +'&paging_offset=' + offset;
+            let fullWay = this.way + "/tasks?session=" + session 
+                                   + "&project_id=" + idProject 
+                                   + "&paging_size="+ pageSize +"&paging_offset=" + offset;
 
             if (search && search != "") {
                 let searchText = "&condition_keywords="+search;
@@ -264,7 +264,7 @@ module ToDoApp.General {
         // получить информацию по проекту
         private static fetchProject($http, idProject: number, success: ((data) => void)) {
         	let session = apiFunc.getCookie("mySession"); 
-            $http.get(this.way + '/projects/project?session=' + session + "&project_id=" + idProject)
+            $http.get(this.way + "/projects/project?session=" + session + "&project_id=" + idProject)
                 .then(
                     (data: any) => {
                     	 success(data.data);
@@ -287,7 +287,7 @@ module ToDoApp.General {
         // править проект
         private static editProject($http, body: editProject, success: (() => void)) {
         	body.session = apiFunc.getCookie("mySession");
-        	$http.post(this.way + '/projects/project', body)
+        	$http.post(this.way + "/projects/project", body)
                 .then((data) => {
                     success();
                 },
@@ -298,7 +298,7 @@ module ToDoApp.General {
         // удалить проект
         private static deleteProject($http, idProject: number, success: (() => void)) {
         	if (idProject != 0) {
-                $http.delete(this.way + '/projects/project?session=' + apiFunc.getCookie("mySession") + '&project_id=' + idProject)
+                $http.delete(this.way + "/projects/project?session=" + apiFunc.getCookie("mySession") + "&project_id=" + idProject)
                     .then(() => {
                         success();
                     },                     
@@ -332,7 +332,7 @@ module ToDoApp.General {
         // удалить таску
         private static deleteTask($http, idTask: number, success: (() => void)){
         	if (idTask != 0) {
-                $http.delete(this.way + '/tasks/task?session=' + apiFunc.getCookie("mySession") + '&task_id=' + idTask)
+                $http.delete(this.way + "/tasks/task?session=" + apiFunc.getCookie("mySession") + "&task_id=" + idTask)
                 .then(() => {
                     success();
                 },                     
@@ -354,7 +354,7 @@ module ToDoApp.General {
         }
         // получить информацию по таске
         private static fetchTask($http, idTask: number, success: ((data) => void)){
- 			$http.get(this.way + '/tasks/task?session=' + apiFunc.getCookie("mySession") + "&task_id=" + idTask)
+ 			$http.get(this.way + "/tasks/task?session=" + apiFunc.getCookie("mySession") + "&task_id=" + idTask)
                 .then(
                     (data: any) => {
                     	 success(data.data);

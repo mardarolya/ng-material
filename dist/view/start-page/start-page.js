@@ -7,66 +7,72 @@ var __extends = (this && this.__extends) || function (d, b) {
 var ToDoApp;
 (function (ToDoApp) {
     var StartPage;
-    (function (StartPage) {
-        'use strict';
+    (function (StartPage_1) {
+        "use strict";
         var startPage = angular.module("ToDoApp.StartPage", ["ui.router"]);
-        var StartPageApp = (function (_super) {
-            __extends(StartPageApp, _super);
-            function StartPageApp($http, $mdSidenav, $state, $scope, $mdDialog) {
-                var _this = _super.call(this, $http) || this;
-                _this.mdSidenav = $mdSidenav;
+        var StartPage = (function (_super) {
+            __extends(StartPage, _super);
+            function StartPage($state, $scope, generalFunc, API) {
+                var _this = _super.call(this, generalFunc, API) || this;
+                _this.offset = 0;
                 _this.projects = [];
                 _this.tasks = [];
                 _this.currentProjectId = 0;
                 _this.loaded = false;
                 _this.state = $state;
-                _this.mdDialog = $mdDialog;
                 _this.searchTask = "";
                 _this.showSearch = true;
-                _this.isSessionAlive(function () {
-                    _this.getUserInfo(function (data) {
+                _this.showSearchTask = false;
+                _this.api.isSessionAlive(function () {
+                    _this.api.getUserInfo(function (data) {
                         _this.currentUser = data.Account.username;
                         var photo = document.querySelector(".with-frame img");
                         photo.src = data.Account.image_url;
                         _this.getProj();
                     });
                 });
-                $scope.$watch(function () { return _this.mdSidenav("rightPanel").isOpen(); }, function (newValue, oldValue) {
-                    if (oldValue == true && newValue == false) {
-                        var reloadProject = localStorage.getItem("reloadProject");
-                        if (reloadProject && reloadProject == "true") {
-                            _this.getProj();
-                            localStorage.removeItem("reloadProject");
-                        }
-                    }
-                });
                 return _this;
             }
-            StartPageApp.prototype.getProj = function () {
+            StartPage.prototype.getProj = function () {
                 var _this = this;
-                this.getProgects(function (data) {
+                this.api.getProgects(function (data) {
                     _this.projects = data.projects;
                     if (_this.currentProjectId == 0) {
                         _this.currentProjectId = _this.projects[0].Project.id;
                     }
+                    ;
                     _this.loaded = true;
-                    _this.showSearch = true;
                     _this.getTasks(_this.currentProjectId);
+                    $(".conteiner-projects").mCustomScrollbar({ theme: "mimimal", scrollEasing: "easeOut" });
                 });
             };
-            StartPageApp.prototype.getTasks = function (projectID) {
+            StartPage.prototype.getTasks = function (projectID) {
                 var _this = this;
                 this.currentProjectId = projectID;
                 this.setActive();
-                this.showSearch = true;
-                this.getProjectTasks(this.currentProjectId, 0, function (data) {
+                var taskCount;
+                for (var i = 0, max = this.projects.length; i < max; i++) {
+                    if (this.projects[i].Project.id == this.currentProjectId) {
+                        taskCount = this.projects[i].Project.task_count;
+                        break;
+                    }
+                }
+                this.offset = 0;
+                if (taskCount > 20) {
+                    this.offset = taskCount - 20;
+                }
+                this.api.getProjectTasks(this.currentProjectId, this.offset, function (data) {
                     if (!document.querySelector(".item-project .active")) {
                         _this.setActive();
                     }
+                    if (document.documentElement.clientWidth < 960) {
+                        _this.close("leftPanel");
+                    }
+                    _this.tasks = [];
                     _this.taskList(data);
                 });
             };
-            StartPageApp.prototype.setActive = function () {
+            StartPage.prototype.setActive = function () {
                 var oldEl = document.querySelector(".item-project .active");
                 if (oldEl) {
                     oldEl.classList.remove("active");
@@ -76,10 +82,9 @@ var ToDoApp;
                     newEl.classList.add("active");
                 }
             };
-            StartPageApp.prototype.taskList = function (data) {
+            StartPage.prototype.taskList = function (data) {
                 var tasksForWork = data.tasks;
                 var dtParts = [];
-                this.tasks = [];
                 for (var i = tasksForWork.length - 1, min = 0; i >= min; i--) {
                     dtParts = ((tasksForWork[i].Task.created_at).split(" ")[0]).split("-");
                     var date = new Date(parseInt(dtParts[0]), parseInt(dtParts[1]) - 1, parseInt(dtParts[2]));
@@ -148,66 +153,154 @@ var ToDoApp;
                     }
                 });
             };
-            StartPageApp.prototype.openForAddProject = function () {
-                this.mdSidenav("rightPanel").open();
-                this.state.go("StartPage.Project", { projectId: 0 }, { reload: "StartPage.Project" });
-            };
-            StartPageApp.prototype.openForEditProject = function () {
-                this.mdSidenav("rightPanel").open();
-                this.state.go("StartPage.Project", { projectId: this.currentProjectId }, { reload: "StartPage.Project" });
-            };
-            StartPageApp.prototype.openForAddTask = function () {
-                this.mdSidenav("rightPanel").open();
-                this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add" }, { reload: "StartPage.Task" });
-            };
-            StartPageApp.prototype.openForShowTask = function (idTask) {
-                this.mdSidenav("rightPanel").open();
-                this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show" }, { reload: "StartPage.Task" });
-            };
-            StartPageApp.prototype.taskDone = function (idTask) {
+            StartPage.prototype.openForAddProject = function () {
                 var _this = this;
-                this.doneTask({ session: "", Task: { id: idTask } }, function () {
+                this.open();
+                var success = function (id) {
+                    _this.currentProjectId = id;
                     _this.getProj();
-                });
+                };
+                this.state.go("StartPage.Project", { projectId: 0, success: success }, { reload: "StartPage.Project" });
             };
-            StartPageApp.prototype.close = function () {
-                this.mdSidenav("rightPanel").close();
-            };
-            StartPageApp.prototype.delProject = function (ev) {
+            StartPage.prototype.openForEditProject = function () {
                 var _this = this;
-                var confirm = this.mdDialog.confirm()
-                    .title('Would you like to delete this project?')
-                    .textContent('')
-                    .ariaLabel('Delete project')
-                    .targetEvent(ev)
-                    .ok('Delete')
-                    .cancel('Cancel');
-                this.mdDialog.show(confirm).then(function () {
-                    _this.deleteProject(_this.currentProjectId, function () {
-                        _this.currentProjectId = 0;
+                this.open();
+                var success = function () {
+                    _this.getProj();
+                };
+                this.state.go("StartPage.Project", { projectId: this.currentProjectId, success: success }, { reload: "StartPage.Project" });
+            };
+            StartPage.prototype.openForAddTask = function () {
+                var _this = this;
+                this.open();
+                var success = function () {
+                    for (var i = 0, max = _this.projects.length; i < max; i++) {
+                        if (_this.projects[i].Project.id == _this.currentProjectId) {
+                            _this.projects[i].Project.task_count = (parseInt(_this.projects[i].Project.task_count) + 1).toString();
+                            break;
+                        }
+                    }
+                    $(".conteiner-projects").mCustomScrollbar("update");
+                    _this.getTasks(_this.currentProjectId);
+                };
+                this.state.go("StartPage.Task", { taskId: 0, projectId: this.currentProjectId, state: "Add", success: success }, { reload: "StartPage.Task" });
+            };
+            StartPage.prototype.openForShowTask = function (idTask) {
+                var _this = this;
+                this.open();
+                var success = function (action) {
+                    if (action == "del") {
                         _this.getProj();
-                    });
-                }, function () { });
+                    }
+                    if (action == "edit") {
+                        _this.getTasks(_this.currentProjectId);
+                        $(".conteiner-projects").mCustomScrollbar("update");
+                    }
+                };
+                this.state.go("StartPage.Task", { taskId: idTask, projectId: this.currentProjectId, state: "Show", success: success }, { reload: "StartPage.Task" });
             };
-            StartPageApp.prototype.goToSearch = function () {
-                var inp = document.querySelector(".search-task");
-                inp.focus();
-            };
-            return StartPageApp;
-        }(ToDoApp.Api.ApiWork));
-        startPage.controller("startPageApp", StartPageApp)
-            .directive('ngEsc', function () {
-            return function (scope, element, attrs) {
-                element.bind("keydown keypress keyup", function (event) {
-                    if (event.which === 27) {
-                        scope.$apply(function () {
-                            scope.$eval(attrs.ngEsc);
-                        });
-                        event.preventDefault();
+            StartPage.prototype.taskDone = function (idTask) {
+                var _this = this;
+                this.api.doneTask({ session: "", Task: { id: idTask } }, function () {
+                    outer: for (var i = 0, max = _this.tasks.length; i < max; i++) {
+                        for (var j = 0, maxj = _this.tasks[i].names.length; j < maxj; j++) {
+                            if (_this.tasks[i].names[j].id == idTask) {
+                                _this.tasks[i].names.splice(j, 1);
+                                if (_this.tasks[i].names.length == 0) {
+                                    _this.tasks.splice(i, 1);
+                                    $(".conteiner-projects").mCustomScrollbar("update");
+                                }
+                                break outer;
+                            }
+                        }
+                    }
+                    for (var i = 0, max = _this.projects.length; i < max; i++) {
+                        if (_this.projects[i].Project.id == _this.currentProjectId) {
+                            _this.projects[i].Project.task_count = (parseInt(_this.projects[i].Project.task_count) - 1).toString();
+                            break;
+                        }
                     }
                 });
             };
-        });
-        ;
+            StartPage.prototype.delProject = function (ev) {
+                var _this = this;
+                this.func.showConfirm({ event: ev, title: "Would you like to delete this project?", okButton: "Delete" }, function () {
+                    _this.api.deleteProject(_this.currentProjectId, function () {
+                        for (var i = 0, max = _this.projects.length; i < max; i++) {
+                            if (_this.projects[i].Project.id == _this.currentProjectId) {
+                                _this.projects.splice(i, 1);
+                                _this.currentProjectId = _this.projects[i].Project.id;
+                                break;
+                            }
+                        }
+                        _this.getTasks(_this.currentProjectId);
+                        $(".conteiner-projects").mCustomScrollbar("update");
+                    });
+                });
+            };
+            StartPage.prototype.goToSearch = function () {
+                var _this = this;
+                if (this.showSearchTask == false) {
+                    this.showSearchTask = true;
+                }
+                setTimeout(function () {
+                    _this.setFocus();
+                }, 300);
+            };
+            StartPage.prototype.setFocus = function () {
+                var inp = document.querySelector(".search-task");
+                if (inp != document.activeElement) {
+                    inp.focus();
+                }
+            };
+            StartPage.prototype.blurSearchTask = function () {
+                if (this.searchTask == "" || this.searchTask.charCodeAt() == 127) {
+                    this.showSearchTask = false;
+                }
+                this.searchTaskByName();
+            };
+            StartPage.prototype.cleanSearch = function () {
+                this.searchTask = "";
+                this.setFocus();
+                this.searchTaskByName();
+            };
+            StartPage.prototype.scrollTasks = function () {
+                var _this = this;
+                var scrollable = document.querySelector(".task-conteiner");
+                var endPos = scrollable.scrollHeight - scrollable.clientHeight - scrollable.scrollTop;
+                if (endPos <= 100) {
+                    if (this.offset > 0) {
+                        this.offset -= 20;
+                        var search = "";
+                        if (this.showSearchTask && this.searchTask != "" && this.searchTask.charCodeAt() != 127) {
+                            search = this.searchTask;
+                        }
+                        this.api.getProjectTasks(this.currentProjectId, this.offset, function (data) {
+                            _this.taskList(data);
+                        }, search);
+                    }
+                }
+            };
+            StartPage.prototype.searchTaskByName = function () {
+                var _this = this;
+                setTimeout(function () {
+                    if (_this.showSearchTask && _this.searchTask != "" && _this.searchTask.charCodeAt() != 127) {
+                        _this.offset = 0;
+                        _this.api.getProjectTasks(_this.currentProjectId, _this.offset, function (data) {
+                            _this.tasks = [];
+                            _this.taskList(data);
+                        }, _this.searchTask);
+                    }
+                    else {
+                        _this.getTasks(_this.currentProjectId);
+                    }
+                }, 1000);
+            };
+            StartPage.prototype.showProjectList = function () {
+                return (document.documentElement.clientWidth < 960);
+            };
+            return StartPage;
+        }(ToDoApp.General.mainController));
+        startPage.controller("startPage", StartPage);
     })(StartPage = ToDoApp.StartPage || (ToDoApp.StartPage = {}));
 })(ToDoApp || (ToDoApp = {}));

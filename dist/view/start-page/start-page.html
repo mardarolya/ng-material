@@ -1,7 +1,7 @@
 
 <md-progress-linear md-mode="indeterminate" ng-show="!c.loaded"></md-progress-linear>
 <div layout="row" ng-show="c.loaded" ng-esc="c.close()" class="conteiner">
-  <md-sidenav md-is-locked-open="true" class="dark-background">
+  <md-sidenav md-is-locked-open="$mdMedia('gt-sm')" md-component-id="leftPanel" class="dark-background">
     <div layout="column" class="conteiner-sidebar">
       <md-list-item class="user"><span class="with-frame"><img ng-src="image/TrevorReyes.jpg" width="50" height="50" class="md-avatar"/></span><span class="name-user">{{c.currentUser}}</span></md-list-item>
       <div class="projects full-width"><span class="to-left">Projects</span>
@@ -20,13 +20,16 @@
   <md-content flex="flex"> 
     <div class="header clearfix">		
       <md-button aria-label="Search" ng-click="c.goToSearch()" class="button-search"><i class="icons8-search"></i></md-button>
-      <md-input-container md-no-float="" class="search">
-        <input aria-label="Search task" ng-model="c.searchTask" placeholder="Write to search" class="search-task"/>
-        <md-button aria-label="Clean" ng-click="c.searchTask = ''" ng-show="c.searchTask != ''" class="clean-search icons8-delete-2"></md-button>
+      <md-input-container md-no-float="" ng-show="c.showSearchTask" class="search">
+        <input aria-label="Search task" ng-model="c.searchTask" placeholder="Write to search" ng-blur="c.blurSearchTask()" ng-change="c.searchTaskByName()" class="search-task"/>
+        <md-button aria-label="Clean" ng-click="c.cleanSearch()" ng-show="c.searchTask != ''" class="clean-search icons8-delete-2"></md-button>
       </md-input-container>
       <md-menu md-position-mode="target-right target" class="button-more">
         <md-button aria-label="Work with Project" ng-click="$mdOpenMenu($event)" class="icons8-more"></md-button>
         <md-menu-content width="4">
+          <md-menu-item ng-show="c.showProjectList()">
+            <md-button aria-label="Project list" ng-click="c.open('leftPanel')">Project list </md-button>
+          </md-menu-item>
           <md-menu-item>
             <md-button aria-label="Edit project" ng-click="c.openForEditProject()">Edit project</md-button>
           </md-menu-item>
@@ -38,10 +41,10 @@
     </div>
     <md-divider></md-divider>
     <div layout="column" ng-show="c.tasks.length == 0" class="complete"><span><i class="icons8-todo-list"></i><br/><span>Have a good day</span></span></div>
-    <div layout="column" class="task-conteiner">
+    <div layout="column" ng-show="c.tasks.length != 0" ng-scroll="c.scrollTasks()" class="task-conteiner">
       <div ng-repeat="task in c.tasks" class="task task"><span class="task-date">{{task.date.display}}</span>
         <md-card>
-          <md-card-content ng-repeat="name in task.names | filter: c.searchTask">
+          <md-card-content ng-repeat="name in task.names">
             <md-radio-group>
               <md-radio-button value="false" ng-click="c.taskDone(name.id)" aria-label="Task" class="md-primary"></md-radio-button>
             </md-radio-group>

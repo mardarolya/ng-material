@@ -8,7 +8,7 @@ var ToDoApp;
 (function (ToDoApp) {
     var StartPage;
     (function (StartPage_1) {
-        'use strict';
+        "use strict";
         var startPage = angular.module("ToDoApp.StartPage", ["ui.router"]);
         var StartPage = (function (_super) {
             __extends(StartPage, _super);

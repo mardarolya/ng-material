@@ -8,7 +8,7 @@ var ToDoApp;
 (function (ToDoApp) {
     var Project;
     (function (Project_1) {
-        'use strict';
+        "use strict";
         var project = angular.module("ToDoApp.Project", ["ui.router"]);
         var Project = (function (_super) {
             __extends(Project, _super);

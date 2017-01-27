@@ -3,7 +3,7 @@
 declare var angular: any;
 
 module ToDoApp.Project {
-    'use strict'; 
+    "use strict"; 
 
     var project = angular.module("ToDoApp.Project", ["ui.router"]);
 

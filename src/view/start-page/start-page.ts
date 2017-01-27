@@ -3,7 +3,7 @@
 declare var angular: any;
 
 module ToDoApp.StartPage {
-    'use strict'; 
+    "use strict"; 
 
     var startPage = angular.module("ToDoApp.StartPage", ["ui.router"]);
 
