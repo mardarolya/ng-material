@@ -42,6 +42,8 @@ body {
 .conteiner .conteiner-sidebar md-list-item.user {
   margin-bottom: 38px;
   padding: 0 40px;
+  min-height: 60px;
+  flex: 0;
 }
 .conteiner .with-frame {
   padding: 4px;
@@ -435,5 +437,8 @@ md-input-container:not(.md-input-focused):not(.md-input-invalid) label.md-requir
   }
   .conteiner .dark-background.md-sidenav-right {
     width: 50%;
+  }
+  .conteiner .task-conteiner .task {
+    width: 100%;
   }
 }
